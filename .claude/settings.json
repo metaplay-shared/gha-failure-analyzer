@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(tree:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(wc:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm add:*)",
+      "Bash(find:*)",
+      "Bash(npx eslint:*)",
+      "Bash(pnpm build:action:*)",
+      "Bash(pnpm eslint:*)",
+      "Bash(pnpm update:*)",
+      "Bash(pnpm outdated:*)",
+      "Bash(pnpm view:*)",
+      "Bash(npm view:*)",
+      "Bash(pnpm config:*)",
+      "Bash(npm ping:*)"
+    ]
+  }
+}

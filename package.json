@@ -1,0 +1,76 @@
+{
+  "name": "gha-failure-analyzer",
+  "version": "1.0.0",
+  "description": "CLI for analyzing failed GitHub Actions workflow runs using OpenCode SDK",
+  "type": "module",
+  "main": "./dist-cli/index.js",
+  "types": "./dist-cli/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist-cli/index.js",
+      "types": "./dist-cli/index.d.ts"
+    }
+  },
+  "bin": {
+    "gha-failure-analyzer": "./dist-cli/main.js"
+  },
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "build": "tsc",
+    "build:action": "ncc build src/action/index.ts -o dist --source-map --license licenses.txt",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src",
+    "clean": "rimraf dist dist-cli coverage"
+  },
+  "keywords": [
+    "github-actions",
+    "workflow",
+    "analyzer",
+    "cli",
+    "opencode"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@actions/core": "3.0.0",
+    "@actions/github": "9.0.0",
+    "@modelcontextprotocol/sdk": "1.26.0",
+    "@octokit/rest": "22.0.1",
+    "@opencode-ai/plugin": "1.2.1",
+    "@opencode-ai/sdk": "1.2.1",
+    "@slack/web-api": "7.14.1",
+    "axios": "1.13.5",
+    "commander": "14.0.3",
+    "dotenv": "17.3.1",
+    "eventemitter3": "5.0.4",
+    "marked": "^15.0.12",
+    "marked-terminal": "7.3.0",
+    "zod": "4.3.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.2",
+    "@types/marked-terminal": "6.1.1",
+    "@types/node": "25.2.3",
+    "@vercel/ncc": "0.38.4",
+    "@vitest/coverage-v8": "4.0.18",
+    "@vitest/ui": "4.0.18",
+    "eslint": "9.39.2",
+    "globals": "17.3.0",
+    "rimraf": "6.1.2",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.55.0",
+    "vitest": "4.0.18"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+name: 'GHA Failure Analyzer'
+description: 'AI-powered analysis of failed GitHub Actions workflows'
+branding:
+  icon: 'activity'
+  color: 'orange'
+inputs:
+  github-token:
+    description: 'GitHub token for API access'
+    required: true
+  run-id:
+    description: 'Workflow run ID (auto-detected from workflow_run event)'
+    required: false
+  repository:
+    description: 'Repository owner/repo (defaults to current)'
+    required: false
+  slack-token:
+    description: 'Slack Bot OAuth token for sending notifications'
+    required: false
+  slack-channel:
+    description: 'Slack channel ID to post notifications to'
+    required: false
+  soft-timeout:
+    description: 'Soft timeout in minutes - sends urgent emit prompt when reached (default: 15)'
+    required: false
+    default: '15'
+outputs:
+  summary:
+    description: 'AI-generated failure summary'
+  recommendations:
+    description: 'JSON array of recommendations'
+runs:
+  using: 'node24'
+  main: 'dist/index.js'
