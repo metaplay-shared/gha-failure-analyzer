@@ -39,18 +39,27 @@ export interface ModelConfig {
   modelID: string;
 }
 
-// Default model specification for OpenCode analysis.
-const DEFAULT_MODEL_SPEC = 'opencode/kimi-k2.5-free';
-
 /**
- * Parse model specification from env var.
- * Format: "provider/model" (e.g., "opencode/big-pickle" or "anthropic/claude-sonnet-4-20250514")
+ * Parse model specification from OPENCODE_MODEL env var.
+ * Format: "provider/model" (e.g., "zai-coding-plan/glm-5" or "openai/gpt-5.4")
  */
 function parseModelSpec(): ModelConfig {
-  const modelSpec = process.env.OPENCODE_MODEL || DEFAULT_MODEL_SPEC;
+  const modelSpec = process.env.OPENCODE_MODEL;
+
+  if (!modelSpec) {
+    throw new Error(
+      `OPENCODE_MODEL environment variable is required but not set.\n` +
+      `Set it to a "provider/model" string. Examples:\n` +
+      `  OPENCODE_MODEL=zai-coding-plan/coding-glm-5-free    (free)\n` +
+      `  OPENCODE_MODEL=zai-coding-plan/glm-5\n` +
+      `  OPENCODE_MODEL=openai/gpt-5.4\n` +
+      `  OPENCODE_MODEL=google/gemini-3.1-pro\n` +
+      `See https://models.dev for all available models.`
+    );
+  }
 
   if (!modelSpec.includes('/')) {
-    throw new Error(`Invalid model specification: "${modelSpec}". Must be in format "{providerID}/{modelID}" (e.g., "opencode/big-pickle" or "zai-coding-plan/glm-4.7"). See https://models.dev for available models.`);
+    throw new Error(`Invalid model specification: "${modelSpec}". Must be in format "{providerID}/{modelID}" (e.g., "zai-coding-plan/glm-5" or "openai/gpt-5.4"). See https://models.dev for available models.`);
   }
 
   const slashIndex = modelSpec.indexOf('/');
