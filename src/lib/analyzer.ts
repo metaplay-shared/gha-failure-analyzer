@@ -494,6 +494,23 @@ async function analyzeWithOpenCode(
     for (let attempt = 1; attempt <= MAX_TOOL_CALL_ATTEMPTS; attempt++) {
       log(`[verbose] Attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS} to get analysis result`);
 
+      // Event-stream soft timeout support is intentionally disabled for now.
+      // OpenCode/SDK 1.14.48/1.2.1 can close /event after only `server.connected`,
+      // causing false "No AI response received" failures even though the blocking
+      // prompt path completes and calls MCP tools. If that upstream event-stream
+      // issue is fixed, reinstate this flow together with eventStream setup and
+      // sendUrgentPrompt above the initial prompt call.
+      //
+      // // Process events with soft timeout callback
+      // // First attempt uses soft timeout; subsequent attempts just wait for completion
+      // // No hard timeout - external process handles termination if needed
+      // const isFirstAttempt = attempt === 1;
+      // const { responseText, toolCalls } = await processEventStream(eventStream, {
+      //   verbose,
+      //   softTimeoutMs: isFirstAttempt ? softTimeoutMs : undefined,
+      //   onSoftTimeout: isFirstAttempt ? sendUrgentPrompt : undefined,
+      // });
+
       // Check for no AI activity on first attempt - likely missing API key
       // If the session completed with no response text and no tool calls, something is wrong
       const noAIOutput = !responseText.trim() && !analysisFromTool;
