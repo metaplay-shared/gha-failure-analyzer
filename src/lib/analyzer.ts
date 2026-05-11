@@ -4,8 +4,8 @@ import { AIAnalysisSchema, getAIAnalysisSchemaDescription, type AIAnalysis, type
 import { getWorkflowLogs, getMostRecentFailedRun, getWorkflowRunSummary } from './github.js';
 import { writeWorkflowSummary, writeJobLogs, getStoragePath, type StoredWorkflowData } from './storage.js';
 import { formatWorkflowSummary, getStatusIcon } from './formatter.js';
-import type { TextPartInput } from '@opencode-ai/sdk';
-import { createOpencodeClient, processEventStream } from './opencode.js';
+import type { Part, TextPartInput } from '@opencode-ai/sdk';
+import { createOpencodeClient } from './opencode.js';
 import { createAnalysisToolServer } from './mcp-tool-server.js';
 import { getNotifier } from './notifier.js';
 
@@ -306,16 +306,6 @@ Call the tool immediately. Do not explain - just call the tool.`;
 }
 
 /**
- * Build an urgent prompt to force immediate analysis emission (soft timeout)
- */
-function buildUrgentEmitPrompt(): string {
-  return `STOP IMMEDIATELY. Time limit reached.
-You MUST call the \`analysis-tool_report_analysis\` tool RIGHT NOW.
-Use whatever findings you have so far - partial analysis is acceptable.
-Do NOT continue investigating. Emit your analysis NOW.`;
-}
-
-/**
  * Parse the analysis result from agent response text using Zod validation
  */
 function parseAnalysisResult(text: string): AIAnalysis | null {
@@ -344,6 +334,46 @@ function parseAnalysisResult(text: string): AIAnalysis | null {
   }
 }
 
+function extractResponseText(parts: Part[]): string {
+  return parts
+    .flatMap((part) => (part.type === 'text' && !part.synthetic ? [part.text] : []))
+    .join('\n');
+}
+
+function logToolParts(parts: Part[], log: (...args: unknown[]) => void): void {
+  for (const part of parts) {
+    if (part.type === 'tool') {
+      log(`[verbose] Tool: ${part.tool} state=${part.state.status}`);
+    }
+  }
+}
+
+function parseAnalysisToolResult(parts: Part[]): AIAnalysis | null {
+  const analysisPart = parts.find(
+    (part) =>
+      part.type === 'tool' &&
+      (part.tool === 'analysis-tool_report_analysis' || part.tool === 'report_analysis') &&
+      part.state.status === 'completed'
+  );
+
+  if (!analysisPart || analysisPart.type !== 'tool' || analysisPart.state.status !== 'completed') {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(analysisPart.state.output);
+    const result = AIAnalysisSchema.safeParse(parsed);
+    if (result.success) {
+      return result.data;
+    }
+    console.log('[warn] Tool output failed schema validation:', result.error.flatten());
+  } catch (e) {
+    console.log('[warn] Failed to parse tool output as JSON:', e);
+  }
+
+  return null;
+}
+
 /**
  * Analyze failures using the OpenCode SDK
  * @param workingDir - Already-resolved working directory
@@ -355,7 +385,7 @@ async function analyzeWithOpenCode(
   filePaths: WorkflowFilePaths,
   workingDir: string,
   verbose: boolean,
-  softTimeoutMs: number
+  _softTimeoutMs: number
 ): Promise<AIAnalysis | null> {
   const log = verbose ? console.log.bind(console) : () => {};
 
@@ -424,16 +454,10 @@ async function analyzeWithOpenCode(
     const parts: Array<TextPartInput> = buildPromptParts(analysisPrompt);
     log(`[verbose] Prompt length: ${analysisPrompt.length} chars`);
 
-    // Connect to events
-    log('[verbose] Connecting to event stream...');
-    const eventStream = await client.event.subscribe({
-      query: { directory: workingDir },
-    });
-    log('[verbose] Event stream connected');
-
     // Send prompt
     log('[verbose] Sending prompt...');
-    const promptResult = await client.session.promptAsync({
+    const promptResult = await client.session.prompt({
+      query: { directory: workingDir },
       path: { id: sessionId },
       body: {
         parts,
@@ -462,47 +486,17 @@ async function analyzeWithOpenCode(
       console.log('');
     }
 
-    // Soft timeout callback - sends urgent prompt mid-stream
-    const sendUrgentPrompt = async (): Promise<boolean> => {
-      const urgentResult = await client.session.promptAsync({
-        path: { id: sessionId },
-        body: {
-          parts: [{ type: 'text', text: buildUrgentEmitPrompt() }],
-          model: {
-            providerID: model.providerID,
-            modelID: model.modelID,
-          },
-          tools: {
-            write: false,
-            edit: false,
-          },
-        },
-      });
-
-      if (urgentResult.error) {
-        log(`[verbose] Urgent prompt failed: ${JSON.stringify(urgentResult.error)}`);
-        return false;
-      }
-      return true; // Continue processing events
-    };
-
     // Retry loop - try multiple times to get the AI to call the tool
+    let responseText = extractResponseText(promptResult.data?.parts ?? []);
+    let analysisFromTool = parseAnalysisToolResult(promptResult.data?.parts ?? []);
+    logToolParts(promptResult.data?.parts ?? [], log);
+
     for (let attempt = 1; attempt <= MAX_TOOL_CALL_ATTEMPTS; attempt++) {
       log(`[verbose] Attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS} to get analysis result`);
 
-      // Process events with soft timeout callback
-      // First attempt uses soft timeout; subsequent attempts just wait for completion
-      // No hard timeout - external process handles termination if needed
-      const isFirstAttempt = attempt === 1;
-      const { responseText, toolCalls } = await processEventStream(eventStream, {
-        verbose,
-        softTimeoutMs: isFirstAttempt ? softTimeoutMs : undefined,
-        onSoftTimeout: isFirstAttempt ? sendUrgentPrompt : undefined,
-      });
-
       // Check for no AI activity on first attempt - likely missing API key
       // If the session completed with no response text and no tool calls, something is wrong
-      const noAIOutput = !responseText.trim() && toolCalls.length === 0;
+      const noAIOutput = !responseText.trim() && !analysisFromTool;
       if (attempt === 1 && noAIOutput) {
         // Find existing API key env variables
         const apiKeyEnvVars = Object.keys(process.env)
@@ -540,6 +534,11 @@ async function analyzeWithOpenCode(
         throw new Error('No AI response received - check API key configuration');
       }
 
+      if (analysisFromTool) {
+        console.log(`[analysis-tool] ${analysisFromTool.summary}`);
+        return analysisFromTool;
+      }
+
       // Try to get the result from the in-process MCP server
       try {
         const result = await Promise.race([
@@ -554,29 +553,12 @@ async function analyzeWithOpenCode(
         log('[verbose] MCP tool result not available');
       }
 
-      // Check if AI called the report_analysis tool via event stream
-      const analysisCall = toolCalls.find(tc =>
-        tc.tool === 'analysis-tool_report_analysis' || tc.tool === 'report_analysis'
-      );
-      if (analysisCall) {
-        try {
-          const parsed = JSON.parse(analysisCall.output);
-          const result = AIAnalysisSchema.safeParse(parsed);
-          if (result.success) {
-            console.log(`[analysis-tool] ${result.data.summary}`);
-            return result.data;
-          }
-          console.log('[warn] Tool output failed schema validation:', result.error.flatten());
-        } catch (e) {
-          console.log('[warn] Failed to parse tool output as JSON:', e);
-        }
-      }
-
       // Tool wasn't called - send a reminder if we have attempts left
       if (attempt < MAX_TOOL_CALL_ATTEMPTS) {
         console.log(`\n[retry] Tool not called. Sending reminder (attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS})...`);
 
-        const reminderResult = await client.session.promptAsync({
+        const reminderResult = await client.session.prompt({
+          query: { directory: workingDir },
           path: { id: sessionId },
           body: {
             parts: [{ type: 'text', text: buildToolReminderPrompt() }],
@@ -594,6 +576,10 @@ async function analyzeWithOpenCode(
         if (reminderResult.error) {
           log(`[verbose] Reminder prompt failed: ${JSON.stringify(reminderResult.error)}`);
         }
+
+        responseText = extractResponseText(reminderResult.data?.parts ?? []);
+        analysisFromTool = parseAnalysisToolResult(reminderResult.data?.parts ?? []);
+        logToolParts(reminderResult.data?.parts ?? [], log);
         continue;
       }
 
