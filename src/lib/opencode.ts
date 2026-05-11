@@ -613,8 +613,8 @@ export async function processEventStream(
       handlePartUpdated(props as unknown as PartEventProps, writer, state, verbose);
     }
 
-    // Check for completion
-    if (isIdleEvent(eventType, props)) {
+    // The event stream can replay initial idle state before the prompt starts.
+    if (isIdleEvent(eventType, props) && state.hadActivity) {
       writer.finish(state.responseText);
       return { responseText: state.responseText, completed: true, toolCalls: state.toolCalls, hadActivity: state.hadActivity };
     }

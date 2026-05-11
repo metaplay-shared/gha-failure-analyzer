@@ -426,7 +426,9 @@ async function analyzeWithOpenCode(
 
     // Connect to events
     log('[verbose] Connecting to event stream...');
-    const eventStream = await client.event.subscribe();
+    const eventStream = await client.event.subscribe({
+      query: { directory: workingDir },
+    });
     log('[verbose] Event stream connected');
 
     // Send prompt

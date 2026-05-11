@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import * as path from 'path';
 import * as fs from 'fs';
-import { createOpencodeClient, processEventStream } from '../lib/opencode.js';
+import { createOpencodeClient } from '../lib/opencode.js';
 import { createSummaryToolServer } from '../lib/mcp-tool-server.js';
 
 interface TestOptions {
@@ -112,14 +112,11 @@ async function action(options: TestOptions): Promise<void> {
     const sessionId = session.data!.id;
     console.log(`done (${sessionId.slice(0, 12)}...)`);
 
-    // Subscribe to events
-    process.stdout.write('Connecting... ');
-    const events = await client.event.subscribe();
-    console.log('done');
-
-    // Send prompt
+    // Send prompt and wait for completion. The async event stream can close after
+    // the initial server.connected event on some OpenCode/SDK combinations.
     process.stdout.write('Sending prompt... ');
-    const result = await client.session.promptAsync({
+    const result = await client.session.prompt({
+      query: { directory: workingDir },
       path: { id: sessionId },
       body: {
         parts: [{ type: 'text', text: PROMPT }],
@@ -136,8 +133,17 @@ async function action(options: TestOptions): Promise<void> {
     }
     console.log('done\n');
 
-    // Process events
-    const { responseText } = await processEventStream(events, { verbose });
+    const responseText = (result.data?.parts ?? [])
+      .flatMap((part) => (part.type === 'text' && !part.synthetic ? [part.text] : []))
+      .join('\n');
+
+    if (verbose) {
+      for (const part of result.data?.parts ?? []) {
+        if (part.type === 'tool') {
+          console.log(`[verbose] Tool: ${part.tool} state=${part.state.status}`);
+        }
+      }
+    }
 
     // Print result
     console.log('\n' + '='.repeat(50));
