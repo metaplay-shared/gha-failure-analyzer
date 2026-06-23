@@ -1,4 +1,4 @@
-import EventEmitter from 'eventemitter3';
+import { EventEmitter } from 'node:events';
 import type { ProgressEvent, ProgressEventType } from './types.js';
 
 export interface ProgressHandlerOptions {

@@ -4,6 +4,15 @@ node_modules/
 # Build output (CLI only - dist/ is committed for action embedding)
 dist-cli/
 
+# dist/ holds only the committed ncc action bundle; ignore any stray build output
+# (e.g. a tsc compile into dist/) so it can't be committed by accident.
+dist/*
+!dist/index.js
+!dist/index.js.map
+!dist/licenses.txt
+!dist/sourcemap-register.cjs
+!dist/package.json
+
 # Test coverage
 coverage/
 

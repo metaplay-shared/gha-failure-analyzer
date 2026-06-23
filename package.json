@@ -42,10 +42,8 @@
     "@opencode-ai/plugin": "1.17.9",
     "@opencode-ai/sdk": "1.17.9",
     "@slack/web-api": "7.17.0",
-    "axios": "1.18.1",
     "commander": "15.0.0",
     "dotenv": "17.4.2",
-    "eventemitter3": "5.0.4",
     "marked": "^18.0.5",
     "marked-terminal": "7.3.0",
     "zod": "4.4.3"
