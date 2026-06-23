@@ -442,7 +442,7 @@ async function analyzeWithOpenCode(
 
     // Process events for live progress, applying the soft timeout (urgent emit) when configured.
     // No hard timeout - the external job timeout handles termination if needed.
-    const { responseText, toolCalls } = await processEventStream(eventStream, {
+    const { toolCalls, hadActivity } = await processEventStream(eventStream, {
       verbose,
       softTimeoutMs: softTimeoutMs > 0 ? softTimeoutMs : undefined,
       onSoftTimeout: softTimeoutMs > 0 ? sendUrgentPrompt : undefined,
@@ -461,9 +461,11 @@ async function analyzeWithOpenCode(
       console.log('[warn] StructuredOutput failed local schema validation:', result.error.flatten());
     }
 
-    // No structured analysis captured. If the model produced nothing at all (no text, no tool
-    // calls), that almost always means missing/invalid credentials - fail loudly with diagnostics.
-    if (!responseText.trim() && toolCalls.length === 0) {
+    // No structured analysis captured. If the model produced NO activity at all (no reasoning,
+    // text, or tool calls), that almost always means missing/invalid credentials - fail loudly.
+    // We key off hadActivity rather than response text, because a successful run emits its
+    // analysis through the StructuredOutput tool and frequently produces no assistant prose.
+    if (!hadActivity) {
       reportNoAIOutput(model);
     }
 

@@ -130097,17 +130097,18 @@ function handlePartUpdated(props, writer, state, verbose) {
             writer.writeTool(normalizeToolName(part.tool), toolInfo);
             writer.writeToolInputKeys(Object.keys(stateInput));
         }
-        // Capture completed tool call outputs
+        // Capture completed tool calls. Key off `input` (the tool's arguments), not `output`:
+        // opencode's built-in StructuredOutput tool carries the model's analysis in its INPUT, while
+        // its output is just a confirmation string that may be empty. Gating on output would silently
+        // drop the analysis.
         if (status === 'completed' && stateInput) {
-            const stateOutput = part.state?.output;
-            if (stateOutput) {
-                state.toolCalls.push({
-                    tool: part.tool,
-                    input: stateInput,
-                    output: stateOutput,
-                });
-                writer.writeToolCompleted(part.tool, stateOutput.length);
-            }
+            const stateOutput = part.state?.output ?? '';
+            state.toolCalls.push({
+                tool: part.tool,
+                input: stateInput,
+                output: stateOutput,
+            });
+            writer.writeToolCompleted(part.tool, stateOutput.length);
         }
     }
 }
@@ -131003,7 +131004,7 @@ async function analyzeWithOpenCode(data, failures, filePaths, workingDir, verbos
         }
         // Process events for live progress, applying the soft timeout (urgent emit) when configured.
         // No hard timeout - the external job timeout handles termination if needed.
-        const { responseText, toolCalls } = await processEventStream(eventStream, {
+        const { toolCalls, hadActivity } = await processEventStream(eventStream, {
             verbose,
             softTimeoutMs: softTimeoutMs > 0 ? softTimeoutMs : undefined,
             onSoftTimeout: softTimeoutMs > 0 ? sendUrgentPrompt : undefined,
@@ -131020,9 +131021,11 @@ async function analyzeWithOpenCode(data, failures, filePaths, workingDir, verbos
             // opencode validates server-side, so a failure here is unexpected - surface, don't hide it.
             console.log('[warn] StructuredOutput failed local schema validation:', result.error.flatten());
         }
-        // No structured analysis captured. If the model produced nothing at all (no text, no tool
-        // calls), that almost always means missing/invalid credentials - fail loudly with diagnostics.
-        if (!responseText.trim() && toolCalls.length === 0) {
+        // No structured analysis captured. If the model produced NO activity at all (no reasoning,
+        // text, or tool calls), that almost always means missing/invalid credentials - fail loudly.
+        // We key off hadActivity rather than response text, because a successful run emits its
+        // analysis through the StructuredOutput tool and frequently produces no assistant prose.
+        if (!hadActivity) {
             reportNoAIOutput(model);
         }
         // The model ran but never produced a valid structured analysis (e.g. StructuredOutputError

@@ -497,17 +497,18 @@ function handlePartUpdated(
       writer.writeToolInputKeys(Object.keys(stateInput));
     }
 
-    // Capture completed tool call outputs
+    // Capture completed tool calls. Key off `input` (the tool's arguments), not `output`:
+    // opencode's built-in StructuredOutput tool carries the model's analysis in its INPUT, while
+    // its output is just a confirmation string that may be empty. Gating on output would silently
+    // drop the analysis.
     if (status === 'completed' && stateInput) {
-      const stateOutput = part.state?.output;
-      if (stateOutput) {
-        state.toolCalls.push({
-          tool: part.tool,
-          input: stateInput,
-          output: stateOutput,
-        });
-        writer.writeToolCompleted(part.tool, stateOutput.length);
-      }
+      const stateOutput = part.state?.output ?? '';
+      state.toolCalls.push({
+        tool: part.tool,
+        input: stateInput,
+        output: stateOutput,
+      });
+      writer.writeToolCompleted(part.tool, stateOutput.length);
     }
   }
 }
