@@ -43,7 +43,7 @@ export type SummaryToolResult = McpToolServerResult<DocumentSummary[]>;
  * Returns the server infrastructure for cleanup.
  */
 async function startMcpHttpServer(
-  mcpServer: McpServer,
+  createServer: () => McpServer,
   onClose: () => void
 ): Promise<{ port: number; url: string; close: () => Promise<void> }> {
   // Map to store transports by session ID
@@ -102,7 +102,10 @@ async function startMcpHttpServer(
             }
           };
 
-          // Connect transport to MCP server
+          // Each session/transport gets its own McpServer instance: a single server
+          // can only be connected to one transport, and the opencode client may open
+          // more than one MCP connection (otherwise the second throws "Already connected").
+          const mcpServer = createServer();
           await mcpServer.connect(transport);
           await transport.handleRequest(req, res, body);
           return;
@@ -191,19 +194,11 @@ async function startMcpHttpServer(
 }
 
 /**
- * Create and start an in-process MCP server with the report_analysis tool.
- * This server runs on a random port and captures tool inputs directly in memory.
+ * Build a fresh MCP server exposing the report_analysis tool. A new instance must be
+ * created per client connection because a single McpServer can only bind one transport.
+ * @param onResult - invoked with the validated analysis when the tool is called
  */
-export async function createAnalysisToolServer(): Promise<AnalysisToolResult> {
-  // Create a deferred promise to capture the analysis result
-  let resolveResult: (value: AIAnalysis) => void;
-  let rejectResult: (reason: Error) => void;
-  const resultPromise = new Promise<AIAnalysis>((resolve, reject) => {
-    resolveResult = resolve;
-    rejectResult = reject;
-  });
-
-  // Create the MCP server with tools capability
+function buildAnalysisToolServer(onResult: (analysis: AIAnalysis) => void): McpServer {
   const mcpServer = new McpServer(
     { name: 'analysis-tool-server', version: '1.0.0' },
     { capabilities: { tools: {} } }
@@ -241,7 +236,7 @@ export async function createAnalysisToolServer(): Promise<AnalysisToolResult> {
       // Validate and capture the analysis result
       const parsed = AIAnalysisSchema.safeParse(args);
       if (parsed.success) {
-        resolveResult(parsed.data);
+        onResult(parsed.data);
         return {
           content: [{ type: 'text' as const, text: JSON.stringify(parsed.data, null, 2) }],
         };
@@ -255,27 +250,40 @@ export async function createAnalysisToolServer(): Promise<AnalysisToolResult> {
     }
   );
 
-  // Start the HTTP server
-  const { port, url, close } = await startMcpHttpServer(mcpServer, () => {
-    rejectResult(new Error('Analysis tool server closed before receiving result'));
+  return mcpServer;
+}
+
+/**
+ * Create and start an in-process MCP server with the report_analysis tool.
+ * This server runs on a random port and captures tool inputs directly in memory.
+ */
+export async function createAnalysisToolServer(): Promise<AnalysisToolResult> {
+  // Create a deferred promise to capture the analysis result
+  let resolveResult: (value: AIAnalysis) => void;
+  let rejectResult: (reason: Error) => void;
+  const resultPromise = new Promise<AIAnalysis>((resolve, reject) => {
+    resolveResult = resolve;
+    rejectResult = reject;
   });
+
+  // Start the HTTP server, building a fresh server (with the report_analysis tool)
+  // for each incoming connection.
+  const { port, url, close } = await startMcpHttpServer(
+    () => buildAnalysisToolServer((analysis) => resolveResult(analysis)),
+    () => {
+      rejectResult(new Error('Analysis tool server closed before receiving result'));
+    }
+  );
 
   return { port, url, resultPromise, close };
 }
 
 /**
- * Create and start an in-process MCP server with the report_summaries tool.
- * This is a simpler tool for testing MCP integration with document summaries.
+ * Build a fresh MCP server exposing the report_summaries tool (one instance per
+ * connection, as a single McpServer can only bind one transport).
+ * @param onResult - invoked with the validated summaries when the tool is called
  */
-export async function createSummaryToolServer(): Promise<SummaryToolResult> {
-  // Create a deferred promise to capture the summaries
-  let resolveResult: (value: DocumentSummary[]) => void;
-  let rejectResult: (reason: Error) => void;
-  const resultPromise = new Promise<DocumentSummary[]>((resolve, reject) => {
-    resolveResult = resolve;
-    rejectResult = reject;
-  });
-
+function buildSummaryToolServer(onResult: (summaries: DocumentSummary[]) => void): McpServer {
   // Schema for document summaries
   const DocumentSummarySchema = z.object({
     filename: z.string().describe('Name of the file'),
@@ -283,7 +291,6 @@ export async function createSummaryToolServer(): Promise<SummaryToolResult> {
   });
   const SummariesSchema = z.array(DocumentSummarySchema);
 
-  // Create the MCP server with tools capability
   const mcpServer = new McpServer(
     { name: 'summary-tool-server', version: '1.0.0' },
     { capabilities: { tools: {} } }
@@ -310,7 +317,7 @@ export async function createSummaryToolServer(): Promise<SummaryToolResult> {
       const input = args as { summaries: DocumentSummary[] };
       const parsed = SummariesSchema.safeParse(input.summaries);
       if (parsed.success) {
-        resolveResult(parsed.data);
+        onResult(parsed.data);
         return {
           content: [
             {
@@ -329,10 +336,30 @@ export async function createSummaryToolServer(): Promise<SummaryToolResult> {
     }
   );
 
-  // Start the HTTP server
-  const { port, url, close } = await startMcpHttpServer(mcpServer, () => {
-    rejectResult(new Error('Summary tool server closed before receiving result'));
+  return mcpServer;
+}
+
+/**
+ * Create and start an in-process MCP server with the report_summaries tool.
+ * This is a simpler tool for testing MCP integration with document summaries.
+ */
+export async function createSummaryToolServer(): Promise<SummaryToolResult> {
+  // Create a deferred promise to capture the summaries
+  let resolveResult: (value: DocumentSummary[]) => void;
+  let rejectResult: (reason: Error) => void;
+  const resultPromise = new Promise<DocumentSummary[]>((resolve, reject) => {
+    resolveResult = resolve;
+    rejectResult = reject;
   });
+
+  // Start the HTTP server, building a fresh server (with the report_summaries tool)
+  // for each incoming connection.
+  const { port, url, close } = await startMcpHttpServer(
+    () => buildSummaryToolServer((summaries) => resolveResult(summaries)),
+    () => {
+      rejectResult(new Error('Summary tool server closed before receiving result'));
+    }
+  );
 
   return { port, url, resultPromise, close };
 }
