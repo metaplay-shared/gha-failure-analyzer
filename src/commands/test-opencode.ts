@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import * as path from 'path';
 import * as fs from 'fs';
 import { createOpencodeClient, processEventStream } from '../lib/opencode.js';
-import { createSummaryToolServer } from '../lib/mcp-tool-server.js';
+import { AIAnalysisSchema, getAIAnalysisJsonSchema } from '../lib/types.js';
 
 interface TestOptions {
   repoPath?: string;
@@ -15,7 +15,7 @@ interface TestOptions {
 export function register(program: Command): void {
   program
     .command('test-opencode')
-    .description('Test MCP tool integration by summarizing markdown files')
+    .description("Smoke-test the configured model's structured-output (format: json_schema) support")
     .option('-p, --repo-path <path>', 'Working directory for the session')
     .option('-v, --verbose', 'Show all events')
     .action(async (options: TestOptions) => {
@@ -23,22 +23,27 @@ export function register(program: Command): void {
     });
 }
 
-const PROMPT = `# Task: Summarize markdown files and report via tool
+// Self-contained failure so the test exercises structured output without needing repo access.
+const PROMPT = `# CI Failure Analysis (smoke test)
 
-## Instructions
-1. List files in the directory to find markdown files (.md)
-2. For each markdown file, read it and create a one-sentence summary
-3. CRITICAL: After summarizing ALL files, you MUST call the \`summary-tool_report_summaries\` tool with your results
+A GitHub Actions integration test failed with this log:
 
-## Tool call format
-The tool expects: { "summaries": [{ "filename": "file.md", "summary": "..." }, ...] }
+\`\`\`
+21:41:10 server: Serving probe proxies on [::]:8585
+21:41:15 botclient: FATAL Health probe proxy failed to bind port 8585: listen tcp :8585: bind: address already in use
+21:41:15 botclient: process exited with code 1
+\`\`\`
 
-## Important
-- Do NOT finish without calling the tool
-- The tool call is MANDATORY - this task is not complete until you call it`;
+The server and botclient share one network namespace and both try to bind port 8585.
+Provide your structured analysis. Do not use any tools; you have all the information you need above.`;
 
 /**
- * Execute the test-opencode command
+ * Execute the test-opencode command.
+ *
+ * Verifies that the configured provider/model honors opencode's native structured output: it
+ * sends a tiny analysis prompt with `format: json_schema` and asserts the model called the
+ * built-in `StructuredOutput` tool with a schema-valid payload. This is the quickest way to
+ * confirm a new model works before wiring it into CI.
  */
 async function action(options: TestOptions): Promise<void> {
   const { repoPath, verbose = false } = options;
@@ -55,144 +60,73 @@ async function action(options: TestOptions): Promise<void> {
     process.exit(1);
   }
 
-  // Start MCP tool server
-  process.stdout.write('Starting MCP tool server... ');
-  const toolServer = await createSummaryToolServer();
-  console.log(`done (port ${toolServer.port})`);
-
   console.log(`\n${PROMPT}\n`);
 
   // Start OpenCode server (prints model config and status)
   const { client, server, model } = await createOpencodeClient(workingDir);
 
   try {
-    // Register MCP tool server with OpenCode (scoped to working directory)
-    process.stdout.write('Registering MCP tool server... ');
-    const mcpResult = await client.mcp.add({
-      query: { directory: workingDir },
-      body: {
-        name: 'summary-tool',
-        config: {
-          type: 'remote',
-          url: toolServer.url,
-        },
-      },
-    });
-    if (mcpResult.error) {
-      console.log('failed');
-      console.error('MCP registration error:', mcpResult.error);
-      return;
-    }
-    console.log('done');
-
-    // Connect to the MCP server to make tools available
-    process.stdout.write('Connecting MCP tool server... ');
-    const connectResult = await client.mcp.connect({
-      query: { directory: workingDir },
-      path: { name: 'summary-tool' },
-    });
-    if (connectResult.error) {
-      console.log('failed');
-      console.error('MCP connect error:', connectResult.error);
-      return;
-    }
-    console.log('done');
-
     // Create session
     process.stdout.write('Creating session... ');
-    const session = await client.session.create({
-      query: { directory: workingDir },
-    });
-
-    if (session.error) {
+    const session = await client.session.create({ directory: workingDir });
+    if (session.error || !session.data) {
       console.error('failed:', session.error);
-      return;
+      process.exit(1);
     }
-
-    const sessionId = session.data!.id;
+    const sessionId = session.data.id;
     console.log(`done (${sessionId.slice(0, 12)}...)`);
 
-    // Subscribe to events
+    // Subscribe to events before sending the prompt
     process.stdout.write('Connecting... ');
     const events = await client.event.subscribe();
     console.log('done');
 
-    // Send prompt
-    process.stdout.write('Sending prompt... ');
+    // Send prompt with structured output enforced
+    process.stdout.write('Sending prompt (format: json_schema)... ');
     const result = await client.session.promptAsync({
-      path: { id: sessionId },
-      body: {
-        parts: [{ type: 'text', text: PROMPT }],
-        model: {
-          providerID: model.providerID,
-          modelID: model.modelID,
-        },
-      },
+      sessionID: sessionId,
+      model: { providerID: model.providerID, modelID: model.modelID },
+      tools: { write: false, edit: false },
+      format: { type: 'json_schema', schema: getAIAnalysisJsonSchema(), retryCount: 2 },
+      parts: [{ type: 'text', text: PROMPT }],
     });
-
     if (result.error) {
       console.error('failed:', result.error);
-      return;
+      process.exit(1);
     }
     console.log('done\n');
 
-    // Process events
-    const { responseText } = await processEventStream(events, { verbose });
+    // Process events (live progress + captured tool calls)
+    const { toolCalls } = await processEventStream(events, { verbose });
 
-    // Print result
     console.log('\n' + '='.repeat(50));
-    console.log('RESPONSE:');
-    console.log('='.repeat(50));
-    console.log(responseText || '(no response received)');
+    console.log('STRUCTURED OUTPUT RESULT:');
     console.log('='.repeat(50));
 
-    // Get the captured summaries from MCP tool
-    console.log('\n' + '='.repeat(50));
-    console.log('MCP TOOL RESULTS:');
-    console.log('='.repeat(50));
-
-    const summaries = await Promise.race([
-      toolServer.resultPromise,
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 2000)),
-    ]);
-
-    if (!summaries) {
-      console.error('FAIL: Tool was not called - no results captured');
+    const structured = toolCalls.find((tc) => tc.tool === 'StructuredOutput');
+    if (!structured) {
+      console.error('FAIL: model did not call the StructuredOutput tool - the provider may not support format: json_schema');
       process.exit(1);
     }
 
-    if (!Array.isArray(summaries)) {
-      console.error('FAIL: Tool result is not an array');
+    const parsed = AIAnalysisSchema.safeParse(structured.input);
+    if (!parsed.success) {
+      console.error('FAIL: StructuredOutput payload did not match the schema:');
+      console.error(JSON.stringify(parsed.error.flatten(), null, 2));
       process.exit(1);
     }
 
-    if (summaries.length === 0) {
-      console.error('FAIL: Tool was called but returned empty array');
-      process.exit(1);
+    console.log('PASS: model returned a schema-valid structured analysis:\n');
+    for (const bullet of parsed.data.summary) {
+      console.log(`  - ${bullet}`);
     }
-
-    // Validate each summary has required fields
-    for (const s of summaries) {
-      if (!s.filename || typeof s.filename !== 'string') {
-        console.error('FAIL: Summary missing valid filename:', s);
-        process.exit(1);
-      }
-      if (!s.summary || typeof s.summary !== 'string') {
-        console.error('FAIL: Summary missing valid summary text:', s);
-        process.exit(1);
-      }
-    }
-
-    console.log(`PASS: Captured ${summaries.length} summaries via MCP tool:\n`);
-    for (const s of summaries) {
-      console.log(`  - ${s.filename}: ${s.summary}`);
+    if (parsed.data.confidence) {
+      console.log(`\n  confidence: ${parsed.data.confidence}`);
     }
     console.log('\n' + '='.repeat(50));
     console.log('All checks passed!');
     console.log('='.repeat(50));
-
   } finally {
     server.close();
-    await toolServer.close();
   }
 }

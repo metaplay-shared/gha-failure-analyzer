@@ -59,9 +59,9 @@ async function run(): Promise<void> {
     if (!result.analysis) {
       const model = process.env.OPENCODE_MODEL ?? 'unknown';
       core.warning(
-        `AI analysis did not produce a result (model: ${model}). The model likely finished ` +
-        `without calling the report_analysis tool and no analysis could be recovered from its ` +
-        `response. See the job summary and logs.`
+        `AI analysis did not produce a result (model: ${model}). The model did not return a ` +
+        `valid structured analysis (it failed to satisfy the output schema, or no AI response ` +
+        `was received). See the job summary and logs.`
       );
     }
 

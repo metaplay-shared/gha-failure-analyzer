@@ -1,4 +1,4 @@
-import { createOpencode } from '@opencode-ai/sdk';
+import { createOpencode } from '@opencode-ai/sdk/v2';
 import { renderMarkdown } from './markdown.js';
 
 /**
@@ -302,11 +302,11 @@ class AnalysisLogger {
 
 /**
  * Normalize tool name for display.
- * Converts internal names like 'analysis-tool_report_analysis' to 'report-analysis'.
+ * Converts opencode's built-in structured-output tool to a friendlier label.
  */
 function normalizeToolName(tool: string): string {
-  if (tool === 'analysis-tool_report_analysis' || tool === 'report_analysis') {
-    return 'report-analysis';
+  if (tool === 'StructuredOutput') {
+    return 'structured-output';
   }
   return tool;
 }
@@ -338,9 +338,8 @@ function formatToolInfo(tool: string | undefined, input: Record<string, unknown>
     case 'bash':
       if (command) return String(command);
       break;
-    case 'report_analysis':
-    case 'analysis-tool_report_analysis':
-      // Don't print the long analysis content
+    case 'StructuredOutput':
+      // Don't print the (long) structured analysis content
       return '';
   }
 
@@ -597,9 +596,10 @@ export async function processEventStream(
       writer.writeError(props);
     }
 
-    // Track message role from message.updated events
+    // Track message role from message.updated events. The v2 event carries the message under
+    // `properties.info`; older payloads used `properties.message` - accept either.
     if (eventType === 'message.updated') {
-      const message = props.message as { role?: string } | undefined;
+      const message = (props.info ?? props.message) as { role?: string } | undefined;
       if (message?.role) {
         state.currentMessageRole = message.role;
       }

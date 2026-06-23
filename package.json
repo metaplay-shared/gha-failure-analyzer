@@ -37,7 +37,6 @@
   "dependencies": {
     "@actions/core": "3.0.1",
     "@actions/github": "9.1.1",
-    "@modelcontextprotocol/sdk": "1.29.0",
     "@octokit/rest": "22.0.1",
     "@opencode-ai/plugin": "1.17.9",
     "@opencode-ai/sdk": "1.17.9",

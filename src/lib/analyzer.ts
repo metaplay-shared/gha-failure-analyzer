@@ -1,12 +1,11 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { AIAnalysisSchema, getAIAnalysisSchemaDescription, type AIAnalysis, type AnalysisResult, type AnalyzeOptions, type FailureInfo } from './types.js';
+import { AIAnalysisSchema, getAIAnalysisJsonSchema, type AIAnalysis, type AnalysisResult, type AnalyzeOptions, type FailureInfo } from './types.js';
 import { getWorkflowLogs, getMostRecentFailedRun, getWorkflowRunSummary } from './github.js';
 import { writeWorkflowSummary, writeJobLogs, getStoragePath, type StoredWorkflowData } from './storage.js';
 import { formatWorkflowSummary, getStatusIcon } from './formatter.js';
-import type { TextPartInput } from '@opencode-ai/sdk';
-import { createOpencodeClient, processEventStream } from './opencode.js';
-import { createAnalysisToolServer } from './mcp-tool-server.js';
+import type { TextPartInput } from '@opencode-ai/sdk/v2';
+import { createOpencodeClient, processEventStream, type ModelConfig } from './opencode.js';
 import { getNotifier } from './notifier.js';
 
 /**
@@ -177,8 +176,11 @@ function extractFailures(
   return failures;
 }
 
-// Configuration constants
-const MAX_TOOL_CALL_ATTEMPTS = 3; // Max retries for getting the AI to call the tool
+// opencode's built-in structured-output tool. When a prompt is sent with
+// `format: { type: 'json_schema', ... }`, opencode exposes the schema as this tool, requires the
+// model to call it, validates the call server-side, and retries internally on failure. The
+// model's analysis arrives as this tool call's input.
+const STRUCTURED_OUTPUT_TOOL = 'StructuredOutput';
 
 interface LogFileInfo {
   path: string;
@@ -266,10 +268,7 @@ You are in READ-ONLY mode. Do not modify any files.
    - Category: code bug, config issue, flaky test, infrastructure, or dependency issue?
    - What's the minimal fix?
 
-5. **MANDATORY - Call the Tool**: You MUST call \`analysis-tool_report_analysis\` with your structured findings. This step is NON-NEGOTIABLE - the task is incomplete without this tool call.
-
-## Tool Schema
-${getAIAnalysisSchemaDescription()}
+5. **Report Your Findings**: Provide your structured analysis as your final answer: concise summary bullets (what failed, why, and how to fix it), a detailed markdown writeup, attribution if you identified the culprit commit via git history, and a confidence level.
 
 ## Workflow Run
 ${workflowSummary}
@@ -292,88 +291,67 @@ function buildPromptParts(mainPrompt: string): Array<TextPartInput> {
 }
 
 /**
- * Build a reminder prompt to instruct the AI to call the analysis tool
- */
-function buildToolReminderPrompt(): string {
-  return `You have not called the required analysis tool. Your task is incomplete.
-
-You MUST call the \`analysis-tool_report_analysis\` tool now with your findings.
-
-## Tool Schema
-${getAIAnalysisSchemaDescription()}
-
-Call the tool immediately. Do not explain - just call the tool.`;
-}
-
-/**
  * Build an urgent prompt to force immediate analysis emission (soft timeout)
  */
 function buildUrgentEmitPrompt(): string {
   return `STOP IMMEDIATELY. Time limit reached.
-You MUST call the \`analysis-tool_report_analysis\` tool RIGHT NOW.
-Use whatever findings you have so far - partial analysis is acceptable.
+Provide your final structured analysis RIGHT NOW using whatever findings you have so far - partial analysis is acceptable.
 Do NOT continue investigating. Emit your analysis NOW.`;
 }
 
 /**
- * Parse the analysis result from agent response text using Zod validation
+ * Print actionable diagnostics when the model returns no output at all (no text, no tool calls).
+ * This almost always means missing or invalid API credentials, so we fail loudly rather than
+ * silently returning an empty analysis.
  */
-function parseAnalysisResult(text: string): AIAnalysis | null {
-  // Try to extract JSON from the response
-  const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*"summary"[\s\S]*"details"[\s\S]*\}/);
+function reportNoAIOutput(model: ModelConfig): never {
+  // Find existing API key env variables
+  const apiKeyEnvVars = Object.keys(process.env)
+    .filter((key) => key.includes('_API_') || key.includes('_KEY'))
+    .sort();
 
-  if (!jsonMatch) {
-    return null;
-  }
-
-  try {
-    const jsonStr = jsonMatch[1] || jsonMatch[0];
-    const parsed = JSON.parse(jsonStr);
-    const result = AIAnalysisSchema.safeParse(parsed);
-
-    if (result.success) {
-      return result.data;
+  console.log('\n' + '='.repeat(70));
+  console.log('ERROR: No AI response received');
+  console.log('='.repeat(70));
+  console.log('');
+  console.log('The AI model did not respond. This usually indicates a missing or');
+  console.log('invalid API key.');
+  console.log('');
+  console.log(`Current model: ${model.providerID}/${model.modelID}`);
+  console.log('');
+  console.log('Expected environment variables by provider:');
+  console.log('  OpenCode:   OPENCODE_API_KEY');
+  console.log('  Anthropic:  ANTHROPIC_API_KEY');
+  console.log('  OpenAI:     OPENAI_API_KEY');
+  console.log('  Google:     GOOGLE_API_KEY or GEMINI_API_KEY');
+  console.log('  z.ai:       ZHIPU_API_KEY (migrating to ZAI_API_KEY)');
+  console.log('  Mistral:    MISTRAL_API_KEY');
+  console.log('  Groq:       GROQ_API_KEY');
+  console.log('');
+  if (apiKeyEnvVars.length > 0) {
+    console.log('Detected API key variables in environment:');
+    for (const envVar of apiKeyEnvVars) {
+      console.log(`  ${envVar}`);
     }
-
-    // Log validation errors for debugging
-    console.error('Zod validation errors:', result.error.flatten());
-    return null;
-  } catch {
-    // JSON parse failed
-    return null;
+  } else {
+    console.log('No API key variables detected in environment.');
   }
+  console.log('='.repeat(70));
+  // Exit immediately - no point continuing without valid API credentials
+  throw new Error('No AI response received - check API key configuration');
 }
 
 /**
- * Last-resort fallback: build an AIAnalysis from the model's freeform response text when it
- * produced an analysis but never called the report_analysis tool (and the text wasn't JSON).
- * Keeps the model's full prose as `details` and derives up to 3 summary bullets from it.
- */
-export function synthesizeAnalysisFromText(text: string): AIAnalysis {
-  const cleaned = text.trim();
-
-  // Derive bullets from the leading non-empty lines, stripping markdown list/heading markers.
-  const bullets = cleaned
-    .split('\n')
-    .map((line) => line.replace(/^[\s>#*\-+\d.)]+/, '').trim())
-    .filter((line) => line.length > 0)
-    .slice(0, 3);
-
-  const summary = bullets.length > 0
-    ? bullets
-    : ['The model produced an analysis but did not call the report tool; see details below.'];
-
-  return {
-    summary,
-    details: cleaned,
-    confidence: 'low',
-  };
-}
-
-/**
- * Analyze failures using the OpenCode SDK
+ * Analyze failures using the OpenCode SDK.
+ *
+ * Structured output is enforced natively via opencode's `format: json_schema`: opencode exposes
+ * {@link getAIAnalysisJsonSchema} as the built-in `StructuredOutput` tool, requires the model to
+ * call it, validates the call against the schema (retrying internally), and we read the result
+ * back from that tool call. This replaces the previous in-process MCP tool server and the
+ * "you forgot to call the tool" retry loop.
+ *
  * @param workingDir - Already-resolved working directory
- * @param softTimeoutMs - Soft timeout in milliseconds (sends urgent emit prompt when reached)
+ * @param softTimeoutMs - Soft timeout in milliseconds (sends urgent emit prompt when reached; 0 disables)
  */
 async function analyzeWithOpenCode(
   data: StoredWorkflowData,
@@ -390,54 +368,13 @@ async function analyzeWithOpenCode(
     process.stdout.write('Initializing AI session... ');
   }
 
-  // Start in-process MCP server with the analysis tool
-  log('[verbose] Starting analysis tool server...');
-  const toolServer = await createAnalysisToolServer();
-  log(`[verbose] Tool server started on port ${toolServer.port}`);
-  log(`[verbose] MCP tool server URL: ${toolServer.url}`);
-
   // Start OpenCode server
   const { client, server, model } = await createOpencodeClient(workingDir, verbose);
 
   try {
-    // Register the MCP server with OpenCode (scoped to working directory)
-    log('[verbose] Registering MCP tool server...');
-    const mcpResult = await client.mcp.add({
-      query: { directory: workingDir },
-      body: {
-        name: 'analysis-tool',
-        config: {
-          type: 'remote',
-          url: toolServer.url,
-        },
-      },
-    });
-    if (mcpResult.error) {
-      if (!verbose) console.log('failed');
-      log(`[verbose] MCP registration error: ${JSON.stringify(mcpResult.error)}`);
-      throw new Error('Failed to register MCP tool server');
-    }
-    log('[verbose] MCP tool server registered');
-
-    // Connect to the MCP server to make tools available
-    log('[verbose] Connecting MCP tool server...');
-    const connectResult = await client.mcp.connect({
-      query: { directory: workingDir },
-      path: { name: 'analysis-tool' },
-    });
-    if (connectResult.error) {
-      if (!verbose) console.log('failed');
-      log(`[verbose] MCP connect error: ${JSON.stringify(connectResult.error)}`);
-      throw new Error('Failed to connect MCP tool server');
-    }
-    log('[verbose] MCP tool server connected');
-
     // Create session
     log('[verbose] Creating session...');
-    const createResult = await client.session.create({
-      query: { directory: workingDir },
-    });
-
+    const createResult = await client.session.create({ directory: workingDir });
     if (createResult.error || !createResult.data) {
       if (!verbose) console.log('failed');
       throw new Error('Failed to create session');
@@ -450,24 +387,28 @@ async function analyzeWithOpenCode(
     const parts: Array<TextPartInput> = buildPromptParts(analysisPrompt);
     log(`[verbose] Prompt length: ${analysisPrompt.length} chars`);
 
-    // Send a prompt to the session with file edits disabled (read-only analysis).
+    // Structured-output contract handed to opencode (see getAIAnalysisJsonSchema).
+    const jsonSchema = getAIAnalysisJsonSchema();
+
+    // Send a prompt with file edits disabled (read-only analysis) and structured output enforced.
     const sendPrompt = (promptParts: Array<TextPartInput>) =>
       client.session.promptAsync({
-        path: { id: sessionId },
-        body: {
-          parts: promptParts,
-          model: {
-            providerID: model.providerID,
-            modelID: model.modelID,
-          },
-          tools: {
-            write: false,
-            edit: false,
-          },
+        sessionID: sessionId,
+        model: {
+          providerID: model.providerID,
+          modelID: model.modelID,
         },
+        tools: {
+          write: false,
+          edit: false,
+        },
+        format: { type: 'json_schema', schema: jsonSchema, retryCount: 2 },
+        parts: promptParts,
       });
 
-    // Soft timeout callback - sends urgent prompt mid-stream (first attempt only)
+    // Soft-timeout callback - nudges the model to emit its (possibly partial) structured analysis
+    // immediately instead of investigating until the job's hard timeout. This is independent of
+    // the structured-output mechanism, so the timing control behaves as it did before.
     const sendUrgentPrompt = async (): Promise<boolean> => {
       const urgentResult = await sendPrompt([{ type: 'text', text: buildUrgentEmitPrompt() }]);
       if (urgentResult.error) {
@@ -477,157 +418,60 @@ async function analyzeWithOpenCode(
       return true; // Continue processing events
     };
 
-    // Retry loop - try multiple times to get the AI to call the tool.
-    //
-    // The OpenCode event stream is a single-use AsyncGenerator: returning out of the
-    // for-await loop in processEventStream() (at the idle event) permanently closes it.
-    // So we subscribe to a FRESH stream each attempt, and always subscribe BEFORE sending
-    // that attempt's prompt so no events are missed. Without this, reminder attempts would
-    // observe an already-closed stream and return instantly without re-running the model.
-    let lastResponseText = '';
-    for (let attempt = 1; attempt <= MAX_TOOL_CALL_ATTEMPTS; attempt++) {
-      const isFirstAttempt = attempt === 1;
-      log(`[verbose] Attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS} to get analysis result`);
+    // Subscribe to the event stream BEFORE sending so no events are missed. opencode emits a
+    // single global stream; one subscription covers the main prompt and any soft-timeout nudge.
+    log('[verbose] Connecting to event stream...');
+    const eventStream = await client.event.subscribe();
+    log('[verbose] Event stream connected');
 
-      // Fresh event subscription for this attempt (see note above).
-      log('[verbose] Connecting to event stream...');
-      const eventStream = await client.event.subscribe();
-      log('[verbose] Event stream connected');
-
-      // Send this attempt's prompt: full analysis first, tool reminder thereafter.
-      log(isFirstAttempt ? '[verbose] Sending prompt...' : '[verbose] Sending reminder prompt...');
-      const promptResult = await sendPrompt(
-        isFirstAttempt ? parts : [{ type: 'text' as const, text: buildToolReminderPrompt() }]
-      );
-      if (promptResult.error) {
-        log(`[verbose] Prompt error: ${JSON.stringify(promptResult.error)}`);
-        // A failed initial prompt is fatal; a failed reminder just ends the retries.
-        if (isFirstAttempt) {
-          if (!verbose) console.log('failed');
-          return null;
-        }
-        break;
-      }
-
-      // Complete the "Initializing AI session..." status line once the first prompt is sent.
-      if (isFirstAttempt) {
-        if (!verbose) {
-          console.log(`done (${model.providerID}/${model.modelID})\n`);
-        } else {
-          log('[verbose] Prompt sent successfully');
-          console.log('');
-        }
-      }
-
-      // Process events with soft timeout callback.
-      // First attempt uses the soft timeout; subsequent attempts just wait for completion.
-      // No hard timeout - external process handles termination if needed.
-      const { responseText, toolCalls } = await processEventStream(eventStream, {
-        verbose,
-        softTimeoutMs: isFirstAttempt ? softTimeoutMs : undefined,
-        onSoftTimeout: isFirstAttempt ? sendUrgentPrompt : undefined,
-      });
-      if (responseText.trim()) {
-        lastResponseText = responseText;
-      }
-
-      // Check for no AI activity on first attempt - likely missing API key
-      // If the session completed with no response text and no tool calls, something is wrong
-      const noAIOutput = !responseText.trim() && toolCalls.length === 0;
-      if (attempt === 1 && noAIOutput) {
-        // Find existing API key env variables
-        const apiKeyEnvVars = Object.keys(process.env)
-          .filter(key => key.includes('_API_') || key.includes('_KEY'))
-          .sort();
-
-        console.log('\n' + '='.repeat(70));
-        console.log('ERROR: No AI response received');
-        console.log('='.repeat(70));
-        console.log('');
-        console.log('The AI model did not respond. This usually indicates a missing or');
-        console.log('invalid API key.');
-        console.log('');
-        console.log(`Current model: ${model.providerID}/${model.modelID}`);
-        console.log('');
-        console.log('Expected environment variables by provider:');
-        console.log('  OpenCode:   OPENCODE_API_KEY');
-        console.log('  Anthropic:  ANTHROPIC_API_KEY');
-        console.log('  OpenAI:     OPENAI_API_KEY');
-        console.log('  Google:     GOOGLE_API_KEY or GEMINI_API_KEY');
-        console.log('  z.ai:       ZHIPU_API_KEY (migrating to ZAI_API_KEY)');
-        console.log('  Mistral:    MISTRAL_API_KEY');
-        console.log('  Groq:       GROQ_API_KEY');
-        console.log('');
-        if (apiKeyEnvVars.length > 0) {
-          console.log('Detected API key variables in environment:');
-          for (const envVar of apiKeyEnvVars) {
-            console.log(`  ${envVar}`);
-          }
-        } else {
-          console.log('No API key variables detected in environment.');
-        }
-        console.log('='.repeat(70));
-        // Exit immediately - no point retrying without valid API credentials
-        throw new Error('No AI response received - check API key configuration');
-      }
-
-      // Try to get the result from the in-process MCP server
-      try {
-        const result = await Promise.race([
-          toolServer.resultPromise,
-          new Promise<null>((resolve) => setTimeout(() => resolve(null), 1000)),
-        ]);
-        if (result) {
-          console.log(`[analysis-tool] ${result.summary}`);
-          return result;
-        }
-      } catch {
-        log('[verbose] MCP tool result not available');
-      }
-
-      // Check if AI called the report_analysis tool via event stream
-      const analysisCall = toolCalls.find(tc =>
-        tc.tool === 'analysis-tool_report_analysis' || tc.tool === 'report_analysis'
-      );
-      if (analysisCall) {
-        try {
-          const parsed = JSON.parse(analysisCall.output);
-          const result = AIAnalysisSchema.safeParse(parsed);
-          if (result.success) {
-            console.log(`[analysis-tool] ${result.data.summary}`);
-            return result.data;
-          }
-          console.log('[warn] Tool output failed schema validation:', result.error.flatten());
-        } catch (e) {
-          console.log('[warn] Failed to parse tool output as JSON:', e);
-        }
-      }
-
-      // Tool wasn't called - note it; the loop sends a reminder on the next attempt.
-      if (attempt < MAX_TOOL_CALL_ATTEMPTS) {
-        console.log(`\n[retry] Tool not called. Sending reminder (attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS})...`);
-      }
+    log('[verbose] Sending prompt...');
+    const promptResult = await sendPrompt(parts);
+    if (promptResult.error) {
+      if (!verbose) console.log('failed');
+      log(`[verbose] Prompt error: ${JSON.stringify(promptResult.error)}`);
+      return null;
     }
 
-    // All attempts exhausted without a tool call. Recover from whatever prose the model
-    // produced so a chatty-but-non-tool-calling model still yields a usable analysis
-    // instead of nothing - otherwise the model's findings are silently discarded.
-    if (lastResponseText.trim()) {
-      log('[verbose] Tool never called; recovering analysis from response text');
-      const parsed = parseAnalysisResult(lastResponseText);
-      if (parsed) {
-        console.log('[analysis-tool] Recovered structured analysis from response text');
-        return parsed;
-      }
-      console.log('[warn] Tool never called; synthesizing analysis from raw response text');
-      return synthesizeAnalysisFromText(lastResponseText);
+    // Complete the "Initializing AI session..." status line once the prompt is sent.
+    if (!verbose) {
+      console.log(`done (${model.providerID}/${model.modelID})\n`);
+    } else {
+      log('[verbose] Prompt sent successfully');
+      console.log('');
     }
 
-    console.log(`[error] Failed to get analysis result after ${MAX_TOOL_CALL_ATTEMPTS} attempts`);
+    // Process events for live progress, applying the soft timeout (urgent emit) when configured.
+    // No hard timeout - the external job timeout handles termination if needed.
+    const { responseText, toolCalls } = await processEventStream(eventStream, {
+      verbose,
+      softTimeoutMs: softTimeoutMs > 0 ? softTimeoutMs : undefined,
+      onSoftTimeout: softTimeoutMs > 0 ? sendUrgentPrompt : undefined,
+    });
+
+    // Extract the structured analysis from opencode's built-in StructuredOutput tool call.
+    // Its `input` is the model's analysis object, already validated server-side against the schema.
+    const structured = toolCalls.find((tc) => tc.tool === STRUCTURED_OUTPUT_TOOL);
+    if (structured) {
+      const result = AIAnalysisSchema.safeParse(structured.input);
+      if (result.success) {
+        console.log(`[analysis] ${result.data.summary[0] ?? 'Analysis complete'}`);
+        return result.data;
+      }
+      // opencode validates server-side, so a failure here is unexpected - surface, don't hide it.
+      console.log('[warn] StructuredOutput failed local schema validation:', result.error.flatten());
+    }
+
+    // No structured analysis captured. If the model produced nothing at all (no text, no tool
+    // calls), that almost always means missing/invalid credentials - fail loudly with diagnostics.
+    if (!responseText.trim() && toolCalls.length === 0) {
+      reportNoAIOutput(model);
+    }
+
+    // The model ran but never produced a valid structured analysis (e.g. StructuredOutputError
+    // after exhausting retries). Return null; the caller renders an "Analysis Unavailable" report.
+    console.log('[error] AI did not produce a structured analysis');
     return null;
   } finally {
     server.close();
-    // Close the in-process MCP tool server
-    await toolServer.close();
   }
 }

@@ -69,7 +69,7 @@ export function formatAnalysisMarkdown(result: AnalysisResult): string {
     lines.push(
       '## Analysis Unavailable',
       '',
-      '> The AI analyzer ran but did not produce a result — the model finished without calling the `report_analysis` tool and no analysis could be recovered from its response. See the job logs for the investigation trace.',
+      '> The AI analyzer ran but did not produce a result — the model did not return a valid structured analysis (it failed to satisfy the output schema, or no AI response was received). See the job logs for the investigation trace.',
       ''
     );
   }

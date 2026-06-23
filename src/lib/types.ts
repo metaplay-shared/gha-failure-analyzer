@@ -95,56 +95,16 @@ export const AIAnalysisSchema = z.object({
 export type AIAnalysis = z.infer<typeof AIAnalysisSchema>;
 
 /**
- * Generate a JSON schema description for prompts from the AIAnalysisSchema.
- * This extracts the descriptions from Zod and formats them for LLM consumption.
+ * Build the JSON Schema for the AI analysis, derived directly from {@link AIAnalysisSchema}.
+ *
+ * This is the structured-output (`format: json_schema`) contract handed to opencode: opencode
+ * exposes it as the built-in `StructuredOutput` tool, instructs the model to call it, and
+ * validates the call against the schema server-side (retrying internally up to `retryCount`
+ * times, surfacing a `StructuredOutputError` if it ultimately can't satisfy it). Generating it
+ * from the Zod schema keeps the model contract and runtime validation from drifting apart.
  */
-export function getAIAnalysisSchemaDescription(): string {
-  const schema = {
-    type: 'object',
-    required: ['summary', 'details'],
-    properties: {
-      summary: {
-        type: 'array',
-        items: { type: 'string' },
-        minItems: 1,
-        maxItems: 5,
-        description: AIAnalysisSchema.shape.summary.description,
-      },
-      attribution: {
-        type: 'object',
-        description: AIAnalysisSchema.shape.attribution.description,
-        properties: {
-          commit: {
-            type: 'string',
-            description: FailureAttributionSchema.shape.commit.description,
-          },
-          author: {
-            type: 'string',
-            description: FailureAttributionSchema.shape.author.description,
-          },
-          message: {
-            type: 'string',
-            description: FailureAttributionSchema.shape.message.description,
-          },
-        },
-        required: ['commit', 'author'],
-      },
-      details: {
-        type: 'string',
-        description: AIAnalysisSchema.shape.details.description,
-      },
-      confidence: {
-        type: 'string',
-        enum: ['high', 'medium', 'low'],
-        description: AIAnalysisSchema.shape.confidence.description,
-      },
-      is_flaky: {
-        type: 'boolean',
-        description: AIAnalysisSchema.shape.is_flaky.description,
-      },
-    },
-  };
-  return JSON.stringify(schema, null, 2);
+export function getAIAnalysisJsonSchema(): Record<string, unknown> {
+  return z.toJSONSchema(AIAnalysisSchema, { target: 'draft-7' }) as Record<string, unknown>;
 }
 
 /**
