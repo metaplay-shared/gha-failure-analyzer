@@ -1,4 +1,4 @@
-import { Marked, type MarkedExtension } from 'marked';
+import { Marked } from 'marked';
 import { markedTerminal } from 'marked-terminal';
 
 /**
@@ -17,8 +17,7 @@ class TerminalRenderer implements MarkdownRenderer {
   private marked: Marked;
 
   constructor() {
-    // Type assertion needed: @types/marked-terminal is outdated for marked v17
-    this.marked = new Marked(markedTerminal() as unknown as MarkedExtension);
+    this.marked = new Marked(markedTerminal());
   }
 
   render(markdown: string): string {

@@ -133271,7 +133271,6 @@ function sanitizeTab(tab, fallbackTab) {
 class TerminalRenderer {
     marked;
     constructor() {
-        // Type assertion needed: @types/marked-terminal is outdated for marked v17
         this.marked = new q(markedTerminal());
     }
     render(markdown) {
