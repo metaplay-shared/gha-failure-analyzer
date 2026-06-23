@@ -2159,7 +2159,7 @@ ConsoleLogger.severity = {
 
 /***/ }),
 
-/***/ 4916:
+/***/ 81952:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2169,7 +2169,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 71675:
+/***/ 26407:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2178,7 +2178,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 35022:
+/***/ 1714:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2188,7 +2188,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 76215:
+/***/ 1907:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2197,7 +2197,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 4867:
+/***/ 3791:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2209,7 +2209,16 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 56448:
+/***/ 52943:
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+//# sourceMappingURL=chunk.js.map
+
+/***/ }),
+
+/***/ 87764:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2218,7 +2227,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 77725:
+/***/ 2993:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2227,7 +2236,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 24950:
+/***/ 48850:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2236,7 +2245,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 26884:
+/***/ 25792:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2245,7 +2254,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 46569:
+/***/ 83949:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2254,7 +2263,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 63400:
+/***/ 81751:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2263,7 +2272,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 53270:
+/***/ 80258:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2272,7 +2281,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 61648:
+/***/ 21020:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2281,7 +2290,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 37626:
+/***/ 58622:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2291,7 +2300,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 10004:
+/***/ 50640:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2300,7 +2309,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 15541:
+/***/ 17681:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2309,7 +2318,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 17209:
+/***/ 60773:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2318,7 +2327,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 91454:
+/***/ 67858:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2327,7 +2336,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 77134:
+/***/ 22682:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -2346,37 +2355,37 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(77725), exports);
-__exportStar(__nccwpck_require__(24950), exports);
-__exportStar(__nccwpck_require__(26884), exports);
-__exportStar(__nccwpck_require__(46569), exports);
-__exportStar(__nccwpck_require__(63400), exports);
-__exportStar(__nccwpck_require__(53270), exports);
-__exportStar(__nccwpck_require__(61648), exports);
-__exportStar(__nccwpck_require__(37626), exports);
-__exportStar(__nccwpck_require__(10004), exports);
-__exportStar(__nccwpck_require__(15541), exports);
-__exportStar(__nccwpck_require__(17209), exports);
-__exportStar(__nccwpck_require__(91454), exports);
-__exportStar(__nccwpck_require__(96037), exports);
-__exportStar(__nccwpck_require__(47940), exports);
-__exportStar(__nccwpck_require__(34518), exports);
-__exportStar(__nccwpck_require__(13929), exports);
-__exportStar(__nccwpck_require__(37611), exports);
-__exportStar(__nccwpck_require__(18217), exports);
-__exportStar(__nccwpck_require__(16299), exports);
-__exportStar(__nccwpck_require__(89623), exports);
-__exportStar(__nccwpck_require__(39128), exports);
-__exportStar(__nccwpck_require__(66791), exports);
-__exportStar(__nccwpck_require__(58173), exports);
-__exportStar(__nccwpck_require__(41993), exports);
-__exportStar(__nccwpck_require__(7339), exports);
-__exportStar(__nccwpck_require__(47371), exports);
+__exportStar(__nccwpck_require__(2993), exports);
+__exportStar(__nccwpck_require__(48850), exports);
+__exportStar(__nccwpck_require__(25792), exports);
+__exportStar(__nccwpck_require__(83949), exports);
+__exportStar(__nccwpck_require__(81751), exports);
+__exportStar(__nccwpck_require__(80258), exports);
+__exportStar(__nccwpck_require__(21020), exports);
+__exportStar(__nccwpck_require__(58622), exports);
+__exportStar(__nccwpck_require__(50640), exports);
+__exportStar(__nccwpck_require__(17681), exports);
+__exportStar(__nccwpck_require__(60773), exports);
+__exportStar(__nccwpck_require__(67858), exports);
+__exportStar(__nccwpck_require__(63137), exports);
+__exportStar(__nccwpck_require__(89136), exports);
+__exportStar(__nccwpck_require__(18354), exports);
+__exportStar(__nccwpck_require__(48957), exports);
+__exportStar(__nccwpck_require__(14743), exports);
+__exportStar(__nccwpck_require__(53957), exports);
+__exportStar(__nccwpck_require__(20135), exports);
+__exportStar(__nccwpck_require__(73227), exports);
+__exportStar(__nccwpck_require__(11564), exports);
+__exportStar(__nccwpck_require__(95507), exports);
+__exportStar(__nccwpck_require__(5585), exports);
+__exportStar(__nccwpck_require__(43469), exports);
+__exportStar(__nccwpck_require__(9967), exports);
+__exportStar(__nccwpck_require__(49543), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 96037:
+/***/ 63137:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2385,7 +2394,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 47940:
+/***/ 89136:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2394,7 +2403,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 34518:
+/***/ 18354:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2403,7 +2412,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 37611:
+/***/ 14743:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2412,7 +2421,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 13929:
+/***/ 48957:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2421,7 +2430,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 18217:
+/***/ 53957:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2430,7 +2439,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 16299:
+/***/ 20135:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2439,7 +2448,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 89623:
+/***/ 73227:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2448,7 +2457,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 39128:
+/***/ 11564:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2457,7 +2466,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 66791:
+/***/ 95507:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2466,7 +2475,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 58173:
+/***/ 5585:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2475,7 +2484,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 41993:
+/***/ 43469:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2484,7 +2493,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 7339:
+/***/ 9967:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2493,7 +2502,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 47371:
+/***/ 49543:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2502,7 +2511,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 1462:
+/***/ 99210:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -2521,21 +2530,22 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(4916), exports);
-__exportStar(__nccwpck_require__(71675), exports);
-__exportStar(__nccwpck_require__(35022), exports);
-__exportStar(__nccwpck_require__(76215), exports);
-__exportStar(__nccwpck_require__(4867), exports);
-__exportStar(__nccwpck_require__(56448), exports);
-__exportStar(__nccwpck_require__(77134), exports);
-__exportStar(__nccwpck_require__(38366), exports);
-__exportStar(__nccwpck_require__(41123), exports);
-__exportStar(__nccwpck_require__(67056), exports);
+__exportStar(__nccwpck_require__(81952), exports);
+__exportStar(__nccwpck_require__(26407), exports);
+__exportStar(__nccwpck_require__(1714), exports);
+__exportStar(__nccwpck_require__(1907), exports);
+__exportStar(__nccwpck_require__(3791), exports);
+__exportStar(__nccwpck_require__(52943), exports);
+__exportStar(__nccwpck_require__(87764), exports);
+__exportStar(__nccwpck_require__(22682), exports);
+__exportStar(__nccwpck_require__(24338), exports);
+__exportStar(__nccwpck_require__(42183), exports);
+__exportStar(__nccwpck_require__(69524), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 38366:
+/***/ 24338:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2544,7 +2554,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 41123:
+/***/ 42183:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2577,7 +2587,7 @@ var CustomFieldType;
 
 /***/ }),
 
-/***/ 67056:
+/***/ 69524:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -2586,7 +2596,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 70802:
+/***/ 49916:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -2679,14 +2689,14 @@ const is_electron_1 = __importDefault(__nccwpck_require__(97299));
 const is_stream_1 = __importDefault(__nccwpck_require__(82198));
 const p_queue_1 = __importDefault(__nccwpck_require__(24902));
 const p_retry_1 = __importStar(__nccwpck_require__(38081));
-const chat_stream_1 = __nccwpck_require__(8318);
-const errors_1 = __nccwpck_require__(16344);
-const file_upload_1 = __nccwpck_require__(90499);
-const helpers_1 = __importDefault(__nccwpck_require__(2878));
-const instrument_1 = __nccwpck_require__(66422);
-const logger_1 = __nccwpck_require__(59431);
-const methods_1 = __nccwpck_require__(15181);
-const retry_policies_1 = __nccwpck_require__(18296);
+const chat_stream_1 = __nccwpck_require__(33924);
+const errors_1 = __nccwpck_require__(66058);
+const file_upload_1 = __nccwpck_require__(7373);
+const helpers_1 = __importDefault(__nccwpck_require__(53904));
+const instrument_1 = __nccwpck_require__(63972);
+const logger_1 = __nccwpck_require__(73949);
+const methods_1 = __nccwpck_require__(41711);
+const retry_policies_1 = __nccwpck_require__(53786);
 /*
  * Helpers
  */
@@ -3435,7 +3445,7 @@ function redact(body) {
 
 /***/ }),
 
-/***/ 8318:
+/***/ 33924:
 /***/ (function(__unused_webpack_module, exports) {
 
 
@@ -3447,6 +3457,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
+};
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ChatStreamer = void 0;
@@ -3509,12 +3530,15 @@ class ChatStreamer {
             if (this.state === 'completed') {
                 throw new Error(`failed to append stream: stream state is ${this.state}`);
             }
-            if (args.token) {
-                this.token = args.token;
+            const { markdown_text, chunks } = args, opts = __rest(args, ["markdown_text", "chunks"]);
+            if (opts.token) {
+                this.token = opts.token;
             }
-            this.buffer += args.markdown_text;
-            if (this.buffer.length >= this.options.buffer_size) {
-                return yield this.flushBuffer(args);
+            if (markdown_text) {
+                this.buffer += markdown_text;
+            }
+            if (this.buffer.length >= this.options.buffer_size || chunks) {
+                return yield this.flushBuffer(Object.assign({ chunks }, opts));
             }
             const details = {
                 bufferLength: this.buffer.length,
@@ -3551,11 +3575,12 @@ class ChatStreamer {
             if (this.state === 'completed') {
                 throw new Error(`failed to stop stream: stream state is ${this.state}`);
             }
-            if (args === null || args === void 0 ? void 0 : args.token) {
-                this.token = args.token;
+            const _a = args !== null && args !== void 0 ? args : {}, { markdown_text, chunks } = _a, opts = __rest(_a, ["markdown_text", "chunks"]);
+            if (opts.token) {
+                this.token = opts.token;
             }
-            if (args === null || args === void 0 ? void 0 : args.markdown_text) {
-                this.buffer += args.markdown_text;
+            if (markdown_text) {
+                this.buffer += markdown_text;
             }
             if (!this.streamTs) {
                 const response = yield this.client.chat.startStream(Object.assign(Object.assign({}, this.streamArgs), { token: this.token }));
@@ -3565,21 +3590,42 @@ class ChatStreamer {
                 this.streamTs = response.ts;
                 this.state = 'in_progress';
             }
-            const response = yield this.client.chat.stopStream(Object.assign(Object.assign({ token: this.token, channel: this.streamArgs.channel, ts: this.streamTs }, args), { markdown_text: this.buffer }));
+            const chunksToFlush = [];
+            if (this.buffer.length > 0) {
+                chunksToFlush.push({
+                    type: 'markdown_text',
+                    text: this.buffer,
+                });
+            }
+            if (chunks) {
+                chunksToFlush.push(...chunks);
+            }
+            const response = yield this.client.chat.stopStream(Object.assign({ token: this.token, channel: this.streamArgs.channel, ts: this.streamTs, chunks: chunksToFlush }, opts));
             this.state = 'completed';
             return response;
         });
     }
     flushBuffer(args) {
         return __awaiter(this, void 0, void 0, function* () {
+            const _a = args !== null && args !== void 0 ? args : {}, { chunks } = _a, opts = __rest(_a, ["chunks"]);
+            const chunksToFlush = [];
+            if (this.buffer.length > 0) {
+                chunksToFlush.push({
+                    type: 'markdown_text',
+                    text: this.buffer,
+                });
+            }
+            if (chunks) {
+                chunksToFlush.push(...chunks);
+            }
             if (!this.streamTs) {
-                const response = yield this.client.chat.startStream(Object.assign(Object.assign(Object.assign(Object.assign({}, this.streamArgs), { token: this.token }), args), { markdown_text: this.buffer }));
+                const response = yield this.client.chat.startStream(Object.assign(Object.assign(Object.assign({}, this.streamArgs), { token: this.token, chunks: chunksToFlush }), opts));
                 this.buffer = '';
                 this.streamTs = response.ts;
                 this.state = 'in_progress';
                 return response;
             }
-            const response = yield this.client.chat.appendStream(Object.assign(Object.assign({ token: this.token, channel: this.streamArgs.channel, ts: this.streamTs }, args), { markdown_text: this.buffer }));
+            const response = yield this.client.chat.appendStream(Object.assign({ token: this.token, channel: this.streamArgs.channel, ts: this.streamTs, chunks: chunksToFlush }, opts));
             this.buffer = '';
             return response;
         });
@@ -3590,7 +3636,7 @@ exports.ChatStreamer = ChatStreamer;
 
 /***/ }),
 
-/***/ 16344:
+/***/ 66058:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -3676,7 +3722,7 @@ function rateLimitedErrorWithDelay(retrySec) {
 
 /***/ }),
 
-/***/ 90499:
+/***/ 7373:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -3715,7 +3761,7 @@ exports.buildMultipleChannelsErrorMsg = buildMultipleChannelsErrorMsg;
 exports.buildInvalidFilesUploadParamError = buildInvalidFilesUploadParamError;
 const node_fs_1 = __nccwpck_require__(73024);
 const node_stream_1 = __nccwpck_require__(57075);
-const errors_1 = __nccwpck_require__(16344);
+const errors_1 = __nccwpck_require__(66058);
 function getFileUploadJob(options, logger) {
     return __awaiter(this, void 0, void 0, function* () {
         var _a, _b, _c, _d;
@@ -4057,7 +4103,7 @@ function buildInvalidFilesUploadParamError() {
 
 /***/ }),
 
-/***/ 2878:
+/***/ 53904:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -4077,7 +4123,7 @@ function delay(ms) {
 
 /***/ }),
 
-/***/ 80911:
+/***/ 42130:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -4100,27 +4146,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.WebClientEvent = exports.WebClient = exports.retryPolicies = exports.LogLevel = exports.addAppMetadata = exports.ErrorCode = void 0;
-var errors_1 = __nccwpck_require__(16344);
+exports.WebClientEvent = exports.WebClient = exports.ChatStreamer = exports.retryPolicies = exports.LogLevel = exports.addAppMetadata = exports.ErrorCode = void 0;
+var errors_1 = __nccwpck_require__(66058);
 Object.defineProperty(exports, "ErrorCode", ({ enumerable: true, get: function () { return errors_1.ErrorCode; } }));
-var instrument_1 = __nccwpck_require__(66422);
+var instrument_1 = __nccwpck_require__(63972);
 Object.defineProperty(exports, "addAppMetadata", ({ enumerable: true, get: function () { return instrument_1.addAppMetadata; } }));
-var logger_1 = __nccwpck_require__(59431);
+var logger_1 = __nccwpck_require__(73949);
 Object.defineProperty(exports, "LogLevel", ({ enumerable: true, get: function () { return logger_1.LogLevel; } }));
-var retry_policies_1 = __nccwpck_require__(18296);
+var retry_policies_1 = __nccwpck_require__(53786);
 Object.defineProperty(exports, "retryPolicies", ({ enumerable: true, get: function () { return __importDefault(retry_policies_1).default; } }));
-__exportStar(__nccwpck_require__(33351), exports);
-__exportStar(__nccwpck_require__(91401), exports);
-var WebClient_1 = __nccwpck_require__(70802);
+__exportStar(__nccwpck_require__(98241), exports);
+__exportStar(__nccwpck_require__(68387), exports);
+var chat_stream_1 = __nccwpck_require__(33924);
+Object.defineProperty(exports, "ChatStreamer", ({ enumerable: true, get: function () { return chat_stream_1.ChatStreamer; } }));
+var WebClient_1 = __nccwpck_require__(49916);
 Object.defineProperty(exports, "WebClient", ({ enumerable: true, get: function () { return WebClient_1.WebClient; } }));
 Object.defineProperty(exports, "WebClientEvent", ({ enumerable: true, get: function () { return WebClient_1.WebClientEvent; } }));
 // methods must be exported after WebClient
-__exportStar(__nccwpck_require__(15181), exports);
+__exportStar(__nccwpck_require__(41711), exports);
 //# sourceMappingURL=index.js.map
 
 /***/ }),
 
-/***/ 66422:
+/***/ 63972:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -4162,7 +4210,7 @@ exports.addAppMetadata = addAppMetadata;
 exports.getUserAgent = getUserAgent;
 const os = __importStar(__nccwpck_require__(48161));
 const node_path_1 = __nccwpck_require__(76760);
-const packageJson = __nccwpck_require__(70187);
+const packageJson = __nccwpck_require__(20193);
 /**
  * Replaces occurrences of '/' with ':' in a string, since '/' is meaningful inside User-Agent strings as a separator.
  */
@@ -4201,7 +4249,7 @@ function getUserAgent() {
 
 /***/ }),
 
-/***/ 59431:
+/***/ 73949:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 
@@ -4236,7 +4284,7 @@ function getLogger(name, level, existingLogger) {
 
 /***/ }),
 
-/***/ 15181:
+/***/ 41711:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 
@@ -4257,7 +4305,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Methods = void 0;
 const eventemitter3_1 = __nccwpck_require__(88400);
-const WebClient_1 = __nccwpck_require__(70802);
+const WebClient_1 = __nccwpck_require__(49916);
 /**
  * Binds a certain `method` and its (required) arguments and result types to the `apiCall` method in `WebClient`.
  */
@@ -5875,12 +5923,12 @@ class Methods extends eventemitter3_1.EventEmitter {
     }
 }
 exports.Methods = Methods;
-__exportStar(__nccwpck_require__(1462), exports);
+__exportStar(__nccwpck_require__(99210), exports);
 //# sourceMappingURL=methods.js.map
 
 /***/ }),
 
-/***/ 18296:
+/***/ 53786:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -5920,7 +5968,7 @@ exports["default"] = policies;
 
 /***/ }),
 
-/***/ 33351:
+/***/ 98241:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -5929,7 +5977,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 91401:
+/***/ 68387:
 /***/ ((__unused_webpack_module, exports) => {
 
 
@@ -112179,10 +112227,10 @@ module.exports = axios;
 
 /***/ }),
 
-/***/ 70187:
+/***/ 20193:
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"name":"@slack/web-api","version":"7.13.0","description":"Official library for using the Slack Platform\'s Web API","author":"Slack Technologies, LLC","license":"MIT","keywords":["slack","web-api","bot","client","http","api","proxy","rate-limiting","pagination"],"main":"dist/index.js","types":"./dist/index.d.ts","files":["dist/**/*"],"engines":{"node":">= 18","npm":">= 8.6.0"},"repository":"slackapi/node-slack-sdk","homepage":"https://docs.slack.dev/tools/node-slack-sdk/web-api/","publishConfig":{"access":"public"},"bugs":{"url":"https://github.com/slackapi/node-slack-sdk/issues"},"scripts":{"prepare":"npm run build","build":"npm run build:clean && tsc","build:clean":"shx rm -rf ./dist ./coverage","docs":"npx typedoc --plugin typedoc-plugin-markdown","lint":"npx @biomejs/biome check .","lint:fix":"npx @biomejs/biome check --write .","mocha":"mocha --config ./test/.mocharc.json \\"./src/**/*.spec.ts\\"","test":"npm run lint && npm run test:types && npm run test:integration && npm run test:unit","test:integration":"npm run build && node test/integration/commonjs-project/index.js && node test/integration/esm-project/index.mjs && npm run test:integration:ts","test:integration:ts":"cd test/integration/ts-4.7-project && npm i && npm run build","test:unit":"npm run build && c8 --config ./test/.c8rc.json npm run mocha","test:types":"tsd","watch":"npx nodemon --watch \'src\' --ext \'ts\' --exec npm run build"},"dependencies":{"@slack/logger":"^4.0.0","@slack/types":"^2.18.0","@types/node":">=18.0.0","@types/retry":"0.12.0","axios":"^1.11.0","eventemitter3":"^5.0.1","form-data":"^4.0.4","is-electron":"2.2.2","is-stream":"^2","p-queue":"^6","p-retry":"^4","retry":"^0.13.1"},"devDependencies":{"@biomejs/biome":"^2.0.5","@tsconfig/recommended":"^1","@types/busboy":"^1.5.4","@types/chai":"^4","@types/mocha":"^10","@types/sinon":"^21","busboy":"^1","c8":"^10.1.2","chai":"^4","mocha":"^11","mocha-junit-reporter":"^2.2.1","mocha-multi-reporters":"^1.5.1","nock":"^14","shx":"^0.4.0","sinon":"^21","source-map-support":"^0.5.21","ts-node":"^10","tsd":"^0.33.0","typedoc":"^0.28.7","typedoc-plugin-markdown":"^4.7.1","typescript":"5.9.3"},"tsd":{"directory":"test/types"}}');
+module.exports = /*#__PURE__*/JSON.parse('{"name":"@slack/web-api","version":"7.14.1","description":"Official library for using the Slack Platform\'s Web API","author":"Slack Technologies, LLC","license":"MIT","keywords":["slack","web-api","bot","client","http","api","proxy","rate-limiting","pagination"],"main":"dist/index.js","types":"./dist/index.d.ts","files":["dist/**/*"],"engines":{"node":">= 18","npm":">= 8.6.0"},"repository":{"type":"git","url":"git+https://github.com/slackapi/node-slack-sdk.git"},"homepage":"https://docs.slack.dev/tools/node-slack-sdk/web-api/","publishConfig":{"access":"public"},"bugs":{"url":"https://github.com/slackapi/node-slack-sdk/issues"},"scripts":{"build":"npm run build:clean && tsc","build:clean":"shx rm -rf ./dist ./coverage","docs":"npx typedoc --plugin typedoc-plugin-markdown","mocha":"mocha --config ./test/.mocharc.json \\"./src/**/*.spec.ts\\"","prepack":"npm run build","test":"npm run test:types && npm run test:integration && npm run test:unit","test:integration":"npm run build && node test/integration/commonjs-project/index.js && node test/integration/esm-project/index.mjs && npm run test:integration:ts","test:integration:ts":"cd test/integration/ts-4.7-project && npm i && npm run build","test:types":"tsd","test:unit":"npm run build && c8 --config ./test/.c8rc.json npm run mocha","watch":"npx nodemon --watch \'src\' --ext \'ts\' --exec npm run build"},"dependencies":{"@slack/logger":"^4.0.0","@slack/types":"^2.20.0","@types/node":">=18.0.0","@types/retry":"0.12.0","axios":"^1.13.5","eventemitter3":"^5.0.1","form-data":"^4.0.4","is-electron":"2.2.2","is-stream":"^2","p-queue":"^6","p-retry":"^4","retry":"^0.13.1"},"devDependencies":{"@tsconfig/recommended":"^1","@types/busboy":"^1.5.4","@types/chai":"^4","@types/mocha":"^10","@types/sinon":"^21","busboy":"^1","c8":"^10.1.2","chai":"^4","mocha":"^11","mocha-junit-reporter":"^2.2.1","mocha-multi-reporters":"^1.5.1","nock":"^14","shx":"^0.4.0","sinon":"^21","source-map-support":"^0.5.21","ts-node":"^10","tsd":"^0.33.0","typedoc":"^0.28.7","typedoc-plugin-markdown":"^4.7.1","typescript":"5.9.3"},"tsd":{"directory":"test/types"}}');
 
 /***/ }),
 
@@ -115427,7 +115475,7 @@ function error(message, properties = {}) {
  * @param properties optional properties to add to the annotation.
  */
 function warning(message, properties = {}) {
-    issueCommand('warning', toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+    command_issueCommand('warning', utils_toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 /**
  * Adds a notice issue
@@ -133344,8 +133392,9 @@ const FailureAttributionSchema = object({
  */
 const AIAnalysisSchema = object({
     summary: array(schemas_string())
-        .length(3)
-        .describe('Exactly 3 concise bullet points: (1) what failed, (2) why it failed, (3) how to fix it'),
+        .min(1)
+        .max(5)
+        .describe('Concise bullet points covering: (1) what failed, (2) why it failed, (3) how to fix it. Prefer exactly 3 (1-5 accepted).'),
     attribution: FailureAttributionSchema.optional().describe('Include ONLY if you can identify a specific commit that caused the issue via git blame/history. Omit entirely if uncertain.'),
     details: schemas_string()
         .describe('Freeform markdown with detailed analysis: error messages, source code excerpts with file paths, git history, suggested fixes'),
@@ -133368,8 +133417,8 @@ function getAIAnalysisSchemaDescription() {
             summary: {
                 type: 'array',
                 items: { type: 'string' },
-                minItems: 3,
-                maxItems: 3,
+                minItems: 1,
+                maxItems: 5,
                 description: AIAnalysisSchema.shape.summary.description,
             },
             attribution: {
@@ -133409,6 +133458,8 @@ function getAIAnalysisSchemaDescription() {
     return JSON.stringify(schema, null, 2);
 }
 
+;// CONCATENATED MODULE: external "node:child_process"
+const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
 ;// CONCATENATED MODULE: ./node_modules/.pnpm/@octokit+plugin-request-log@6.0.0_@octokit+core@7.0.6/node_modules/@octokit/plugin-request-log/dist-src/version.js
 const plugin_request_log_dist_src_version_VERSION = "6.0.0";
 
@@ -133458,6 +133509,7 @@ const dist_src_Octokit = Octokit.plugin(requestLog, legacyRestEndpointMethods, p
 
 ;// CONCATENATED MODULE: ./src/lib/github.ts
 
+
 let octokitInstance = null;
 /**
  * Parse repository string into owner and repo
@@ -133467,17 +133519,29 @@ function parseRepository(repo) {
     return { owner, repo: repoName };
 }
 /**
- * Get the GitHub token from environment
+ * Get the GitHub token from environment, falling back to `gh auth token`
  */
 function getGitHubToken() {
     const token = process.env.GITHUB_TOKEN;
-    if (!token) {
-        throw new Error('GITHUB_TOKEN environment variable is required.\n' +
-            'Set it using the GitHub CLI:\n' +
-            '  Unix/macOS:  export GITHUB_TOKEN=$(gh auth token)\n' +
-            '  PowerShell:  $env:GITHUB_TOKEN = $(gh auth token)');
+    if (token) {
+        return token;
     }
-    return token;
+    // When running locally (not in GitHub Actions), try the gh CLI
+    if (!process.env.GITHUB_ACTIONS) {
+        try {
+            const ghToken = (0,external_node_child_process_namespaceObject.execFileSync)('gh', ['auth', 'token'], { encoding: 'utf-8' }).trim();
+            if (ghToken) {
+                return ghToken;
+            }
+        }
+        catch {
+            // gh CLI not available or not authenticated
+        }
+    }
+    throw new Error('GITHUB_TOKEN environment variable is required.\n' +
+        'Set it using the GitHub CLI:\n' +
+        '  Unix/macOS:  export GITHUB_TOKEN=$(gh auth token)\n' +
+        '  PowerShell:  $env:GITHUB_TOKEN = $(gh auth token)');
 }
 /**
  * Get or create an Octokit instance
@@ -133862,7 +133926,7 @@ function getStatusIcon(conclusion) {
  */
 function formatWorkflowSummary(data) {
     const lines = [];
-    const { run, jobs, annotations } = data;
+    const { run, jobs } = data;
     // Header
     lines.push('');
     lines.push('='.repeat(70));
@@ -133897,7 +133961,7 @@ function formatWorkflowSummary(data) {
     return lines.join('\n');
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/core/serverSentEvents.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/core/serverSentEvents.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 const createSseClient = ({ onSseError, onSseEvent, responseTransformer, responseValidator, sseDefaultRetryDelay, sseMaxRetryAttempts, sseMaxRetryDelay, sseSleepFn, url, ...options }) => {
     let lastEventId;
@@ -134016,7 +134080,7 @@ const createSseClient = ({ onSseError, onSseEvent, responseTransformer, response
     return { stream };
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/core/auth.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/core/auth.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 const getAuthToken = async (auth, callback) => {
     const token = typeof callback === "function" ? await callback(auth) : callback;
@@ -134032,7 +134096,7 @@ const getAuthToken = async (auth, callback) => {
     return token;
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/core/bodySerializer.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/core/bodySerializer.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 const serializeFormDataPair = (data, key, value) => {
     if (typeof value === "string" || value instanceof Blob) {
@@ -134091,7 +134155,7 @@ const urlSearchParamsBodySerializer = {
     },
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/core/pathSerializer.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/core/pathSerializer.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 const separatorArrayExplode = (style) => {
     switch (style) {
@@ -134199,7 +134263,7 @@ const serializeObjectParam = ({ allowReserved, explode, name, style, value, valu
     return style === "label" || style === "matrix" ? separator + joinedValues : joinedValues;
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/core/utils.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/core/utils.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 
 const PATH_PARAM_RE = /\{[^{}]+\}/g;
@@ -134270,7 +134334,7 @@ const getUrl = ({ baseUrl, path, query, querySerializer, url: _url, }) => {
     return url;
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/client/utils.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/client/utils.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 
 
@@ -134498,7 +134562,7 @@ const createConfig = (override = {}) => ({
     ...override,
 });
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/client/client.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/client/client.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 
 
@@ -134665,7 +134729,7 @@ const createClient = (config = {}) => {
     };
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/core/params.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/core/params.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 const extraPrefixesMap = {
     $body_: "body",
@@ -134756,21 +134820,21 @@ const buildClientParams = (args, fields) => {
     return params;
 };
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/client/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/client/index.js
 // This file is auto-generated by @hey-api/openapi-ts
 
 
 
 
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/client.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/client.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 
 const client = createClient(createConfig({
     baseUrl: "http://localhost:4096",
 }));
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/gen/sdk.gen.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/gen/sdk.gen.js
 // This file is auto-generated by @hey-api/openapi-ts
 
 class _HeyApiClient {
@@ -135653,7 +135717,7 @@ class OpencodeClient extends _HeyApiClient {
     event = new action_Event({ client: this._client });
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/client.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/client.js
 
 
 
@@ -135673,16 +135737,14 @@ function createOpencodeClient(config) {
     if (config?.directory) {
         config.headers = {
             ...config.headers,
-            "x-opencode-directory": config.directory,
+            "x-opencode-directory": encodeURIComponent(config.directory),
         };
     }
     const client = createClient(config);
     return new OpencodeClient({ client });
 }
 
-;// CONCATENATED MODULE: external "node:child_process"
-const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/server.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/server.js
 
 async function createOpencodeServer(options) {
     options = Object.assign({
@@ -135778,7 +135840,7 @@ function createOpencodeTui(options) {
     };
 }
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.1.36/node_modules/@opencode-ai/sdk/dist/index.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@opencode-ai+sdk@1.2.1/node_modules/@opencode-ai/sdk/dist/index.js
 
 
 
@@ -138861,7 +138923,7 @@ const isAndroid = environment_platform === 'Android'
 	|| globalThis.navigator?.userAgent?.includes(' Android ') === true
 	|| globalThis.process?.platform === 'android';
 
-;// CONCATENATED MODULE: ./node_modules/.pnpm/ansi-escapes@7.2.0/node_modules/ansi-escapes/base.js
+;// CONCATENATED MODULE: ./node_modules/.pnpm/ansi-escapes@7.3.0/node_modules/ansi-escapes/base.js
 
 
 
@@ -138995,6 +139057,10 @@ const clearTerminal = isOldWindows()
 
 const enterAlternativeScreen = ESC + '?1049h';
 const exitAlternativeScreen = ESC + '?1049l';
+
+const beginSynchronizedOutput = ESC + '?2026h';
+const endSynchronizedOutput = ESC + '?2026l';
+const synchronizedOutput = text => beginSynchronizedOutput + text + endSynchronizedOutput;
 
 const beep = (/* unused pure expression or super */ null && (BEL));
 
@@ -139870,16 +139936,23 @@ const WATCHER_IGNORE = [
     // Build tools
     '.moon/cache/**',
 ];
-// Default model specification for OpenCode analysis.
-const DEFAULT_MODEL_SPEC = 'opencode/kimi-k2.5-free';
 /**
- * Parse model specification from env var.
- * Format: "provider/model" (e.g., "opencode/big-pickle" or "anthropic/claude-sonnet-4-20250514")
+ * Parse model specification from OPENCODE_MODEL env var.
+ * Format: "provider/model" (e.g., "zai-coding-plan/glm-5" or "openai/gpt-5.4")
  */
 function parseModelSpec() {
-    const modelSpec = process.env.OPENCODE_MODEL || DEFAULT_MODEL_SPEC;
+    const modelSpec = process.env.OPENCODE_MODEL;
+    if (!modelSpec) {
+        throw new Error(`OPENCODE_MODEL environment variable is required but not set.\n` +
+            `Set it to a "provider/model" string. Examples:\n` +
+            `  OPENCODE_MODEL=zai-coding-plan/coding-glm-5-free    (free)\n` +
+            `  OPENCODE_MODEL=zai-coding-plan/glm-5\n` +
+            `  OPENCODE_MODEL=openai/gpt-5.4\n` +
+            `  OPENCODE_MODEL=google/gemini-3.1-pro\n` +
+            `See https://models.dev for all available models.`);
+    }
     if (!modelSpec.includes('/')) {
-        throw new Error(`Invalid model specification: "${modelSpec}". Must be in format "{providerID}/{modelID}" (e.g., "opencode/big-pickle" or "zai-coding-plan/glm-4.7"). See https://models.dev for available models.`);
+        throw new Error(`Invalid model specification: "${modelSpec}". Must be in format "{providerID}/{modelID}" (e.g., "zai-coding-plan/glm-5" or "openai/gpt-5.4"). See https://models.dev for available models.`);
     }
     const slashIndex = modelSpec.indexOf('/');
     return {
@@ -139908,6 +139981,9 @@ async function opencode_createOpencodeClient(workingDir, verbose = false) {
     try {
         const result = await createOpencode({
             port: 0, // Random available port
+            // The SDK defaults to an aggressive 5s server-start timeout; cold starts (CI,
+            // Windows, slow disks) can exceed it. Allow more headroom, overridable via env.
+            timeout: Number(process.env.OPENCODE_SERVER_TIMEOUT_MS) || 30000,
             config: {
                 model: `${model.providerID}/${model.modelID}`,
                 watcher: {
@@ -140175,9 +140251,10 @@ function handlePartUpdated(props, writer, state, verbose) {
     // Reasoning events are always from the assistant - don't require role check
     if (part.type === 'reasoning') {
         state.hadActivity = true;
-        writer.startThinking();
-        if (delta) {
-            writer.writeThinking(delta);
+        const text = delta || part.text;
+        if (text) {
+            writer.startThinking();
+            writer.writeThinking(text);
         }
         return;
     }
@@ -152313,7 +152390,7 @@ const EMPTY_COMPLETION_RESULT = {
 var external_http2_ = __nccwpck_require__(85675);
 // EXTERNAL MODULE: external "stream"
 var external_stream_ = __nccwpck_require__(2203);
-;// CONCATENATED MODULE: ./node_modules/.pnpm/@hono+node-server@1.19.9_hono@4.11.7/node_modules/@hono/node-server/dist/index.mjs
+;// CONCATENATED MODULE: ./node_modules/.pnpm/@hono+node-server@1.19.9_hono@4.11.9/node_modules/@hono/node-server/dist/index.mjs
 // src/server.ts
 
 
@@ -153938,7 +154015,8 @@ async function createAnalysisToolServer() {
         description: 'Report the CI failure analysis results. You MUST call this tool with your structured analysis after completing your investigation.',
         inputSchema: {
             summary: array(schemas_string())
-                .length(3)
+                .min(1)
+                .max(5)
                 .describe(AIAnalysisSchema.shape.summary.description),
             attribution: object({
                 commit: schemas_string().describe(FailureAttributionSchema.shape.commit.description),
@@ -154370,8 +154448,8 @@ class ConsoleNotifier {
     }
 }
 
-// EXTERNAL MODULE: ./node_modules/.pnpm/@slack+web-api@7.13.0/node_modules/@slack/web-api/dist/index.js
-var web_api_dist = __nccwpck_require__(80911);
+// EXTERNAL MODULE: ./node_modules/.pnpm/@slack+web-api@7.14.1/node_modules/@slack/web-api/dist/index.js
+var web_api_dist = __nccwpck_require__(42130);
 ;// CONCATENATED MODULE: ./src/lib/notifiers/slack.ts
 
 
@@ -154737,6 +154815,28 @@ function parseAnalysisResult(text) {
     }
 }
 /**
+ * Last-resort fallback: build an AIAnalysis from the model's freeform response text when it
+ * produced an analysis but never called the report_analysis tool (and the text wasn't JSON).
+ * Keeps the model's full prose as `details` and derives up to 3 summary bullets from it.
+ */
+function synthesizeAnalysisFromText(text) {
+    const cleaned = text.trim();
+    // Derive bullets from the leading non-empty lines, stripping markdown list/heading markers.
+    const bullets = cleaned
+        .split('\n')
+        .map((line) => line.replace(/^[\s>#*\-+\d.)]+/, '').trim())
+        .filter((line) => line.length > 0)
+        .slice(0, 3);
+    const summary = bullets.length > 0
+        ? bullets
+        : ['The model produced an analysis but did not call the report tool; see details below.'];
+    return {
+        summary,
+        details: cleaned,
+        confidence: 'low',
+    };
+}
+/**
  * Analyze failures using the OpenCode SDK
  * @param workingDir - Already-resolved working directory
  * @param softTimeoutMs - Soft timeout in milliseconds (sends urgent emit prompt when reached)
@@ -154802,16 +154902,11 @@ async function analyzeWithOpenCode(data, failures, filePaths, workingDir, verbos
         const analysisPrompt = buildAnalysisPrompt(data, failures, filePaths);
         const parts = buildPromptParts(analysisPrompt);
         log(`[verbose] Prompt length: ${analysisPrompt.length} chars`);
-        // Connect to events
-        log('[verbose] Connecting to event stream...');
-        const eventStream = await client.event.subscribe();
-        log('[verbose] Event stream connected');
-        // Send prompt
-        log('[verbose] Sending prompt...');
-        const promptResult = await client.session.promptAsync({
+        // Send a prompt to the session with file edits disabled (read-only analysis).
+        const sendPrompt = (promptParts) => client.session.promptAsync({
             path: { id: sessionId },
             body: {
-                parts,
+                parts: promptParts,
                 model: {
                     providerID: model.providerID,
                     modelID: model.modelID,
@@ -154822,54 +154917,64 @@ async function analyzeWithOpenCode(data, failures, filePaths, workingDir, verbos
                 },
             },
         });
-        if (promptResult.error) {
-            if (!verbose)
-                console.log('failed');
-            log(`[verbose] Error: ${JSON.stringify(promptResult.error)}`);
-            return null;
-        }
-        // Complete the single status message
-        if (!verbose) {
-            console.log(`done (${model.providerID}/${model.modelID})\n`);
-        }
-        else {
-            log('[verbose] Prompt sent successfully');
-            console.log('');
-        }
-        // Soft timeout callback - sends urgent prompt mid-stream
+        // Soft timeout callback - sends urgent prompt mid-stream (first attempt only)
         const sendUrgentPrompt = async () => {
-            const urgentResult = await client.session.promptAsync({
-                path: { id: sessionId },
-                body: {
-                    parts: [{ type: 'text', text: buildUrgentEmitPrompt() }],
-                    model: {
-                        providerID: model.providerID,
-                        modelID: model.modelID,
-                    },
-                    tools: {
-                        write: false,
-                        edit: false,
-                    },
-                },
-            });
+            const urgentResult = await sendPrompt([{ type: 'text', text: buildUrgentEmitPrompt() }]);
             if (urgentResult.error) {
                 log(`[verbose] Urgent prompt failed: ${JSON.stringify(urgentResult.error)}`);
                 return false;
             }
             return true; // Continue processing events
         };
-        // Retry loop - try multiple times to get the AI to call the tool
+        // Retry loop - try multiple times to get the AI to call the tool.
+        //
+        // The OpenCode event stream is a single-use AsyncGenerator: returning out of the
+        // for-await loop in processEventStream() (at the idle event) permanently closes it.
+        // So we subscribe to a FRESH stream each attempt, and always subscribe BEFORE sending
+        // that attempt's prompt so no events are missed. Without this, reminder attempts would
+        // observe an already-closed stream and return instantly without re-running the model.
+        let lastResponseText = '';
         for (let attempt = 1; attempt <= MAX_TOOL_CALL_ATTEMPTS; attempt++) {
-            log(`[verbose] Attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS} to get analysis result`);
-            // Process events with soft timeout callback
-            // First attempt uses soft timeout; subsequent attempts just wait for completion
-            // No hard timeout - external process handles termination if needed
             const isFirstAttempt = attempt === 1;
+            log(`[verbose] Attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS} to get analysis result`);
+            // Fresh event subscription for this attempt (see note above).
+            log('[verbose] Connecting to event stream...');
+            const eventStream = await client.event.subscribe();
+            log('[verbose] Event stream connected');
+            // Send this attempt's prompt: full analysis first, tool reminder thereafter.
+            log(isFirstAttempt ? '[verbose] Sending prompt...' : '[verbose] Sending reminder prompt...');
+            const promptResult = await sendPrompt(isFirstAttempt ? parts : [{ type: 'text', text: buildToolReminderPrompt() }]);
+            if (promptResult.error) {
+                log(`[verbose] Prompt error: ${JSON.stringify(promptResult.error)}`);
+                // A failed initial prompt is fatal; a failed reminder just ends the retries.
+                if (isFirstAttempt) {
+                    if (!verbose)
+                        console.log('failed');
+                    return null;
+                }
+                break;
+            }
+            // Complete the "Initializing AI session..." status line once the first prompt is sent.
+            if (isFirstAttempt) {
+                if (!verbose) {
+                    console.log(`done (${model.providerID}/${model.modelID})\n`);
+                }
+                else {
+                    log('[verbose] Prompt sent successfully');
+                    console.log('');
+                }
+            }
+            // Process events with soft timeout callback.
+            // First attempt uses the soft timeout; subsequent attempts just wait for completion.
+            // No hard timeout - external process handles termination if needed.
             const { responseText, toolCalls } = await processEventStream(eventStream, {
                 verbose,
                 softTimeoutMs: isFirstAttempt ? softTimeoutMs : undefined,
                 onSoftTimeout: isFirstAttempt ? sendUrgentPrompt : undefined,
             });
+            if (responseText.trim()) {
+                lastResponseText = responseText;
+            }
             // Check for no AI activity on first attempt - likely missing API key
             // If the session completed with no response text and no tool calls, something is wrong
             const noAIOutput = !responseText.trim() && toolCalls.length === 0;
@@ -154939,37 +155044,23 @@ async function analyzeWithOpenCode(data, failures, filePaths, workingDir, verbos
                     console.log('[warn] Failed to parse tool output as JSON:', e);
                 }
             }
-            // Tool wasn't called - send a reminder if we have attempts left
+            // Tool wasn't called - note it; the loop sends a reminder on the next attempt.
             if (attempt < MAX_TOOL_CALL_ATTEMPTS) {
                 console.log(`\n[retry] Tool not called. Sending reminder (attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS})...`);
-                const reminderResult = await client.session.promptAsync({
-                    path: { id: sessionId },
-                    body: {
-                        parts: [{ type: 'text', text: buildToolReminderPrompt() }],
-                        model: {
-                            providerID: model.providerID,
-                            modelID: model.modelID,
-                        },
-                        tools: {
-                            write: false,
-                            edit: false,
-                        },
-                    },
-                });
-                if (reminderResult.error) {
-                    log(`[verbose] Reminder prompt failed: ${JSON.stringify(reminderResult.error)}`);
-                }
-                continue;
             }
-            // Final attempt - try to parse from response text as last resort
-            if (responseText) {
-                log('[verbose] Attempting to parse raw response as JSON fallback');
-                const result = parseAnalysisResult(responseText);
-                if (result) {
-                    return result;
-                }
-                console.log('[warn] Failed to parse response as structured JSON');
+        }
+        // All attempts exhausted without a tool call. Recover from whatever prose the model
+        // produced so a chatty-but-non-tool-calling model still yields a usable analysis
+        // instead of nothing - otherwise the model's findings are silently discarded.
+        if (lastResponseText.trim()) {
+            log('[verbose] Tool never called; recovering analysis from response text');
+            const parsed = parseAnalysisResult(lastResponseText);
+            if (parsed) {
+                console.log('[analysis-tool] Recovered structured analysis from response text');
+                return parsed;
             }
+            console.log('[warn] Tool never called; synthesizing analysis from raw response text');
+            return synthesizeAnalysisFromText(lastResponseText);
         }
         console.log(`[error] Failed to get analysis result after ${MAX_TOOL_CALL_ATTEMPTS} attempts`);
         return null;
@@ -155038,6 +155129,9 @@ function formatAnalysisMarkdown(result) {
             lines.push('## Details', '', analysis.details, '');
         }
     }
+    else {
+        lines.push('## Analysis Unavailable', '', '> The AI analyzer ran but did not produce a result — the model finished without calling the `report_analysis` tool and no analysis could be recovered from its response. See the job logs for the investigation trace.', '');
+    }
     return lines.join('\n');
 }
 
@@ -155090,6 +155184,14 @@ async function run() {
         });
         const markdown = formatAnalysisMarkdown(result);
         await summary.addRaw(markdown).write();
+        // Surface a loud warning when the AI produced no result, so a passing job doesn't
+        // silently hide a failed analysis.
+        if (!result.analysis) {
+            const model = process.env.OPENCODE_MODEL ?? 'unknown';
+            warning(`AI analysis did not produce a result (model: ${model}). The model likely finished ` +
+                `without calling the report_analysis tool and no analysis could be recovered from its ` +
+                `response. See the job summary and logs.`);
+        }
         // Set outputs - use summary bullets as recommendations
         const summaryText = result.analysis?.summary.join('\n') ?? '';
         setOutput('summary', summaryText);

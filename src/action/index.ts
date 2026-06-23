@@ -54,6 +54,17 @@ async function run(): Promise<void> {
     const markdown = formatAnalysisMarkdown(result);
     await core.summary.addRaw(markdown).write();
 
+    // Surface a loud warning when the AI produced no result, so a passing job doesn't
+    // silently hide a failed analysis.
+    if (!result.analysis) {
+      const model = process.env.OPENCODE_MODEL ?? 'unknown';
+      core.warning(
+        `AI analysis did not produce a result (model: ${model}). The model likely finished ` +
+        `without calling the report_analysis tool and no analysis could be recovered from its ` +
+        `response. See the job summary and logs.`
+      );
+    }
+
     // Set outputs - use summary bullets as recommendations
     const summaryText = result.analysis?.summary.join('\n') ?? '';
     core.setOutput('summary', summaryText);

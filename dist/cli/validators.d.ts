@@ -1,9 +1,4 @@
 /**
- * Check if a path is the Metaplay SDK repo root.
- * Returns null if valid, or an error message if not.
- */
-export declare function validateSdkRepoRoot(repoPath: string): string | null;
-/**
  * Validate that a value is a positive integer
  */
 export declare function validatePositiveInt(value: string): number;

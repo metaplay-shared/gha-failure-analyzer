@@ -72,8 +72,9 @@ export type FailureAttribution = z.infer<typeof FailureAttributionSchema>;
 export const AIAnalysisSchema = z.object({
   summary: z
     .array(z.string())
-    .length(3)
-    .describe('Exactly 3 concise bullet points: (1) what failed, (2) why it failed, (3) how to fix it'),
+    .min(1)
+    .max(5)
+    .describe('Concise bullet points covering: (1) what failed, (2) why it failed, (3) how to fix it. Prefer exactly 3 (1-5 accepted).'),
   attribution: FailureAttributionSchema.optional().describe(
     'Include ONLY if you can identify a specific commit that caused the issue via git blame/history. Omit entirely if uncertain.'
   ),
@@ -105,8 +106,8 @@ export function getAIAnalysisSchemaDescription(): string {
       summary: {
         type: 'array',
         items: { type: 'string' },
-        minItems: 3,
-        maxItems: 3,
+        minItems: 1,
+        maxItems: 5,
         description: AIAnalysisSchema.shape.summary.description,
       },
       attribution: {

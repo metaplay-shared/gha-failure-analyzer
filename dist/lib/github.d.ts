@@ -7,7 +7,7 @@ export declare function parseRepository(repo: string): {
     repo: string;
 };
 /**
- * Get the GitHub token from environment
+ * Get the GitHub token from environment, falling back to `gh auth token`
  */
 export declare function getGitHubToken(): string;
 /**

@@ -94,6 +94,9 @@ export async function createOpencodeClient(workingDir?: string, verbose = false)
   try {
     const result = await createOpencode({
       port: 0, // Random available port
+      // The SDK defaults to an aggressive 5s server-start timeout; cold starts (CI,
+      // Windows, slow disks) can exceed it. Allow more headroom, overridable via env.
+      timeout: Number(process.env.OPENCODE_SERVER_TIMEOUT_MS) || 30000,
       config: {
         model: `${model.providerID}/${model.modelID}`,
         watcher: {

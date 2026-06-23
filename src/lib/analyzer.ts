@@ -345,6 +345,32 @@ function parseAnalysisResult(text: string): AIAnalysis | null {
 }
 
 /**
+ * Last-resort fallback: build an AIAnalysis from the model's freeform response text when it
+ * produced an analysis but never called the report_analysis tool (and the text wasn't JSON).
+ * Keeps the model's full prose as `details` and derives up to 3 summary bullets from it.
+ */
+export function synthesizeAnalysisFromText(text: string): AIAnalysis {
+  const cleaned = text.trim();
+
+  // Derive bullets from the leading non-empty lines, stripping markdown list/heading markers.
+  const bullets = cleaned
+    .split('\n')
+    .map((line) => line.replace(/^[\s>#*\-+\d.)]+/, '').trim())
+    .filter((line) => line.length > 0)
+    .slice(0, 3);
+
+  const summary = bullets.length > 0
+    ? bullets
+    : ['The model produced an analysis but did not call the report tool; see details below.'];
+
+  return {
+    summary,
+    details: cleaned,
+    confidence: 'low',
+  };
+}
+
+/**
  * Analyze failures using the OpenCode SDK
  * @param workingDir - Already-resolved working directory
  * @param softTimeoutMs - Soft timeout in milliseconds (sends urgent emit prompt when reached)
@@ -424,48 +450,12 @@ async function analyzeWithOpenCode(
     const parts: Array<TextPartInput> = buildPromptParts(analysisPrompt);
     log(`[verbose] Prompt length: ${analysisPrompt.length} chars`);
 
-    // Connect to events
-    log('[verbose] Connecting to event stream...');
-    const eventStream = await client.event.subscribe();
-    log('[verbose] Event stream connected');
-
-    // Send prompt
-    log('[verbose] Sending prompt...');
-    const promptResult = await client.session.promptAsync({
-      path: { id: sessionId },
-      body: {
-        parts,
-        model: {
-          providerID: model.providerID,
-          modelID: model.modelID,
-        },
-        tools: {
-          write: false,
-          edit: false,
-        },
-      },
-    });
-
-    if (promptResult.error) {
-      if (!verbose) console.log('failed');
-      log(`[verbose] Error: ${JSON.stringify(promptResult.error)}`);
-      return null;
-    }
-
-    // Complete the single status message
-    if (!verbose) {
-      console.log(`done (${model.providerID}/${model.modelID})\n`);
-    } else {
-      log('[verbose] Prompt sent successfully');
-      console.log('');
-    }
-
-    // Soft timeout callback - sends urgent prompt mid-stream
-    const sendUrgentPrompt = async (): Promise<boolean> => {
-      const urgentResult = await client.session.promptAsync({
+    // Send a prompt to the session with file edits disabled (read-only analysis).
+    const sendPrompt = (promptParts: Array<TextPartInput>) =>
+      client.session.promptAsync({
         path: { id: sessionId },
         body: {
-          parts: [{ type: 'text', text: buildUrgentEmitPrompt() }],
+          parts: promptParts,
           model: {
             providerID: model.providerID,
             modelID: model.modelID,
@@ -477,6 +467,9 @@ async function analyzeWithOpenCode(
         },
       });
 
+    // Soft timeout callback - sends urgent prompt mid-stream (first attempt only)
+    const sendUrgentPrompt = async (): Promise<boolean> => {
+      const urgentResult = await sendPrompt([{ type: 'text', text: buildUrgentEmitPrompt() }]);
       if (urgentResult.error) {
         log(`[verbose] Urgent prompt failed: ${JSON.stringify(urgentResult.error)}`);
         return false;
@@ -484,19 +477,59 @@ async function analyzeWithOpenCode(
       return true; // Continue processing events
     };
 
-    // Retry loop - try multiple times to get the AI to call the tool
+    // Retry loop - try multiple times to get the AI to call the tool.
+    //
+    // The OpenCode event stream is a single-use AsyncGenerator: returning out of the
+    // for-await loop in processEventStream() (at the idle event) permanently closes it.
+    // So we subscribe to a FRESH stream each attempt, and always subscribe BEFORE sending
+    // that attempt's prompt so no events are missed. Without this, reminder attempts would
+    // observe an already-closed stream and return instantly without re-running the model.
+    let lastResponseText = '';
     for (let attempt = 1; attempt <= MAX_TOOL_CALL_ATTEMPTS; attempt++) {
+      const isFirstAttempt = attempt === 1;
       log(`[verbose] Attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS} to get analysis result`);
 
-      // Process events with soft timeout callback
-      // First attempt uses soft timeout; subsequent attempts just wait for completion
-      // No hard timeout - external process handles termination if needed
-      const isFirstAttempt = attempt === 1;
+      // Fresh event subscription for this attempt (see note above).
+      log('[verbose] Connecting to event stream...');
+      const eventStream = await client.event.subscribe();
+      log('[verbose] Event stream connected');
+
+      // Send this attempt's prompt: full analysis first, tool reminder thereafter.
+      log(isFirstAttempt ? '[verbose] Sending prompt...' : '[verbose] Sending reminder prompt...');
+      const promptResult = await sendPrompt(
+        isFirstAttempt ? parts : [{ type: 'text' as const, text: buildToolReminderPrompt() }]
+      );
+      if (promptResult.error) {
+        log(`[verbose] Prompt error: ${JSON.stringify(promptResult.error)}`);
+        // A failed initial prompt is fatal; a failed reminder just ends the retries.
+        if (isFirstAttempt) {
+          if (!verbose) console.log('failed');
+          return null;
+        }
+        break;
+      }
+
+      // Complete the "Initializing AI session..." status line once the first prompt is sent.
+      if (isFirstAttempt) {
+        if (!verbose) {
+          console.log(`done (${model.providerID}/${model.modelID})\n`);
+        } else {
+          log('[verbose] Prompt sent successfully');
+          console.log('');
+        }
+      }
+
+      // Process events with soft timeout callback.
+      // First attempt uses the soft timeout; subsequent attempts just wait for completion.
+      // No hard timeout - external process handles termination if needed.
       const { responseText, toolCalls } = await processEventStream(eventStream, {
         verbose,
         softTimeoutMs: isFirstAttempt ? softTimeoutMs : undefined,
         onSoftTimeout: isFirstAttempt ? sendUrgentPrompt : undefined,
       });
+      if (responseText.trim()) {
+        lastResponseText = responseText;
+      }
 
       // Check for no AI activity on first attempt - likely missing API key
       // If the session completed with no response text and no tool calls, something is wrong
@@ -570,40 +603,24 @@ async function analyzeWithOpenCode(
         }
       }
 
-      // Tool wasn't called - send a reminder if we have attempts left
+      // Tool wasn't called - note it; the loop sends a reminder on the next attempt.
       if (attempt < MAX_TOOL_CALL_ATTEMPTS) {
         console.log(`\n[retry] Tool not called. Sending reminder (attempt ${attempt}/${MAX_TOOL_CALL_ATTEMPTS})...`);
-
-        const reminderResult = await client.session.promptAsync({
-          path: { id: sessionId },
-          body: {
-            parts: [{ type: 'text', text: buildToolReminderPrompt() }],
-            model: {
-              providerID: model.providerID,
-              modelID: model.modelID,
-            },
-            tools: {
-              write: false,
-              edit: false,
-            },
-          },
-        });
-
-        if (reminderResult.error) {
-          log(`[verbose] Reminder prompt failed: ${JSON.stringify(reminderResult.error)}`);
-        }
-        continue;
       }
+    }
 
-      // Final attempt - try to parse from response text as last resort
-      if (responseText) {
-        log('[verbose] Attempting to parse raw response as JSON fallback');
-        const result = parseAnalysisResult(responseText);
-        if (result) {
-          return result;
-        }
-        console.log('[warn] Failed to parse response as structured JSON');
+    // All attempts exhausted without a tool call. Recover from whatever prose the model
+    // produced so a chatty-but-non-tool-calling model still yields a usable analysis
+    // instead of nothing - otherwise the model's findings are silently discarded.
+    if (lastResponseText.trim()) {
+      log('[verbose] Tool never called; recovering analysis from response text');
+      const parsed = parseAnalysisResult(lastResponseText);
+      if (parsed) {
+        console.log('[analysis-tool] Recovered structured analysis from response text');
+        return parsed;
       }
+      console.log('[warn] Tool never called; synthesizing analysis from raw response text');
+      return synthesizeAnalysisFromText(lastResponseText);
     }
 
     console.log(`[error] Failed to get analysis result after ${MAX_TOOL_CALL_ATTEMPTS} attempts`);

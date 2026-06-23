@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import type { AnalysisResult } from '../lib/types.js';
 export interface AnalyzeOptions {
     raw?: boolean;
+    repoPath?: string;
     verbose?: boolean;
     quiet?: boolean;
     timeout?: number;

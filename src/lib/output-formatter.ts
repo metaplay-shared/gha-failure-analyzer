@@ -65,6 +65,13 @@ export function formatAnalysisMarkdown(result: AnalysisResult): string {
     if (analysis.details) {
       lines.push('## Details', '', analysis.details, '');
     }
+  } else {
+    lines.push(
+      '## Analysis Unavailable',
+      '',
+      '> The AI analyzer ran but did not produce a result — the model finished without calling the `report_analysis` tool and no analysis could be recovered from its response. See the job logs for the investigation trace.',
+      ''
+    );
   }
 
   return lines.join('\n');

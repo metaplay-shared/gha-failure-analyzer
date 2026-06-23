@@ -218,7 +218,8 @@ export async function createAnalysisToolServer(): Promise<AnalysisToolResult> {
       inputSchema: {
         summary: z
           .array(z.string())
-          .length(3)
+          .min(1)
+          .max(5)
           .describe(AIAnalysisSchema.shape.summary.description!),
         attribution: z
           .object({
